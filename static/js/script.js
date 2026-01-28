@@ -59,4 +59,54 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    // ===== Back to Top Button =====
+    const backToTopButton = document.getElementById('back-to-top');
+    
+    if (backToTopButton) {
+        // Show/hide button based on scroll position
+        const toggleBackToTop = () => {
+            if (window.scrollY > 300) {
+                backToTopButton.classList.add('visible');
+            } else {
+                backToTopButton.classList.remove('visible');
+            }
+        };
+
+        window.addEventListener('scroll', toggleBackToTop);
+        toggleBackToTop(); // Check initial state
+
+        // Scroll to top when clicked
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
+
+    // ===== Scroll Fade-in Animation =====
+    const fadeInSections = document.querySelectorAll('.fade-in-section');
+    
+    if (fadeInSections.length > 0) {
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px 0px -50px 0px',
+            threshold: 0.1
+        };
+
+        const fadeInObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    // Optional: stop observing after animation
+                    // observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        fadeInSections.forEach(section => {
+            fadeInObserver.observe(section);
+        });
+    }
 });
