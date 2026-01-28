@@ -4,13 +4,19 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Publications - Ming-Hao Hsu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
       rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <link
       href="/static/css/style.css"
@@ -20,9 +26,7 @@
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
       <div class="container">
-        <a class="navbar-brand" href="/"
-          >Ming-Hao Hsu</a
-        >
+        <a class="navbar-brand" href="/">Ming-Hao Hsu</a>
         <button
           class="navbar-toggler"
           type="button"
@@ -37,21 +41,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav me-auto">
             <li class="nav-item">
-              <a class="nav-link" href="/about/">About</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/research/">Research</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/publications/"
-                >Publications</a
-              >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/blog/">Blog</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/contact/">Contact</a>
+              <a class="nav-link" href="/publications/">Publications</a>
             </li>
           </ul>
           <button
@@ -73,217 +63,150 @@
       </div>
     </nav>
 
-    <div class="container mt-4">
-<h1 class="mb-4">Publications</h1>
-<div class="row" id="publications-container">
-  
-  <div class="col-12 mb-4">
-    <div
-      class="card h-100 publication-card"
-      data-id="1"
-      data-title="Meta-Whisper: Speech-Based Meta-ICL for ASR on Low-Resource Languages"
-    >
-      <div class="card-body d-flex flex-row">
-        <div class="img-container">
-          <img
-            src="/static/images/metawhisper.png"
-            alt="Paper structure"
-            class="img-fluid mb-3"
-          />
-        </div>
-        <div class="flex-grow-1 pl-3">
-          <h5 class="card-title">Meta-Whisper: Speech-Based Meta-ICL for ASR on Low-Resource Languages</h5>
-          <h6 class="card-subtitle mb-2 text-muted">Ming-Hao Hsu*, Kuan Po Huang, Hung-yi Lee</h6>
-          <p class="card-text">ArXiv Preprint, 2024</p>
-          <div class="publication-links">
-               
-            <button
-              class="btn btn-sm btn-outline-primary publication-btn bibtex-btn"
-              data-bibtex="@article{hsu2024meta, title={Meta-Whisper: Speech-Based Meta-ICL for ASR on Low-Resource Languages}, author={Hsu, Ming-Hao and Huang, Kuan Po and Lee, Hung-yi}, journal={ArXiv Preprint}, year={2024}}"
-            >
-              BibTeX
-            </button>
-            
-          </div>
-        </div>
+    <!-- Publications Header -->
+    <section class="publications-header">
+      <div class="container">
+        <h1>Publications</h1>
+        <p class="publications-subtitle">Selected research papers in speech processing, NLP, and machine learning</p>
       </div>
-    </div>
-  </div>
-  
-  <div class="col-12 mb-4">
-    <div
-      class="card h-100 publication-card"
-      data-id="2"
-      data-title="Diffusion Model-Augmented Behavioral Cloning"
-    >
-      <div class="card-body d-flex flex-row">
-        <div class="img-container">
-          <img
-            src="/static/images/dbc.png"
-            alt="Paper structure"
-            class="img-fluid mb-3"
-          />
-        </div>
-        <div class="flex-grow-1 pl-3">
-          <h5 class="card-title">Diffusion Model-Augmented Behavioral Cloning</h5>
-          <h6 class="card-subtitle mb-2 text-muted">Shang-Fu Chen*, Hsiang-Chun Wang*, Ming-Hao Hsu, Chun-Mao Lai, Shao-Hua Sun</h6>
-          <p class="card-text">Forty-first International Conference on Machine Learning (ICML), 2024</p>
-          <div class="publication-links">
-            
-            <a
-              href="https://arxiv.org/abs/2302.13335"
-              class="btn btn-sm btn-outline-primary publication-btn"
-              target="_blank"
-              rel="noopener noreferrer"
-              >Paper</a
-            >
-             
-            <a
-              href="https://nturobotlearninglab.github.io/dbc/"
-              class="btn btn-sm btn-outline-primary publication-btn"
-              target="_blank"
-              rel="noopener noreferrer"
-              >Project Page</a
-            >
-              
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <div class="col-12 mb-4">
-    <div
-      class="card h-100 publication-card"
-      data-id="3"
-      data-title="Exploring In-Context Learning of Textless Speech Language Model for Speech Classification Tasks"
-    >
-      <div class="card-body d-flex flex-row">
-        <div class="img-container">
-          <img
-            src="/static/images/exploreicl.png"
-            alt="Paper structure"
-            class="img-fluid mb-3"
-          />
-        </div>
-        <div class="flex-grow-1 pl-3">
-          <h5 class="card-title">Exploring In-Context Learning of Textless Speech Language Model for Speech Classification Tasks</h5>
-          <h6 class="card-subtitle mb-2 text-muted">Ming-Hao Hsu*, Kai-Wei Chang*, Shang-Wen Li, Hung-yi Lee</h6>
-          <p class="card-text">Proceedings of the 2024 Conference of the International Speech Communication Association (INTERSPEECH), 2024</p>
-          <div class="publication-links">
-            
-            <a
-              href="https://arxiv.org/abs/2310.12477"
-              class="btn btn-sm btn-outline-primary publication-btn"
-              target="_blank"
-              rel="noopener noreferrer"
-              >Paper</a
-            >
-               
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <div class="col-12 mb-4">
-    <div
-      class="card h-100 publication-card"
-      data-id="4"
-      data-title="GSQA: An End-to-End Model for Generative Spoken Question Answering"
-    >
-      <div class="card-body d-flex flex-row">
-        <div class="img-container">
-          <img
-            src="/static/images/gsqa.png"
-            alt="Paper structure"
-            class="img-fluid mb-3"
-          />
-        </div>
-        <div class="flex-grow-1 pl-3">
-          <h5 class="card-title">GSQA: An End-to-End Model for Generative Spoken Question Answering</h5>
-          <h6 class="card-subtitle mb-2 text-muted">Min-Han Shih*, Ho-Lam Chung*, Yu-Chi Pai*, Ming-Hao Hsu, Guan-Ting Lin, Shang-Wen Li, Hung-yi Lee</h6>
-          <p class="card-text">Proceedings of the 2024 Conference of the International Speech Communication Association (INTERSPEECH), 2024</p>
-          <div class="publication-links">
-            
-            <a
-              href="https://arxiv.org/abs/2312.09781"
-              class="btn btn-sm btn-outline-primary publication-btn"
-              target="_blank"
-              rel="noopener noreferrer"
-              >Paper</a
-            >
-             
-            <a
-              href="https://eric-lam.com/GSQA/"
-              class="btn btn-sm btn-outline-primary publication-btn"
-              target="_blank"
-              rel="noopener noreferrer"
-              >Project Page</a
-            >
-              
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <div class="col-12 mb-4">
-    <div
-      class="card h-100 publication-card"
-      data-id="5"
-      data-title="Controllable User Dialogue Act Augmentation for Dialogue State Tracking"
-    >
-      <div class="card-body d-flex flex-row">
-        <div class="img-container">
-          <img
-            src="/static/images/cudadst.png"
-            alt="Paper structure"
-            class="img-fluid mb-3"
-          />
-        </div>
-        <div class="flex-grow-1 pl-3">
-          <h5 class="card-title">Controllable User Dialogue Act Augmentation for Dialogue State Tracking</h5>
-          <h6 class="card-subtitle mb-2 text-muted">Chun-Mao Lai*, Ming-Hao Hsu*, Chao-Wei Huang, Yun-Nung Chen</h6>
-          <p class="card-text">Proceedings of the 23rd Annual Meeting of the Special Interest Group on Discourse and Dialogue (SIGDIAL), 2022</p>
-          <div class="publication-links">
-            
-            <a
-              href="https://arxiv.org/abs/2207.12757"
-              class="btn btn-sm btn-outline-primary publication-btn"
-              target="_blank"
-              rel="noopener noreferrer"
-              >Paper</a
-            >
-               
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-</div>
+    </section>
 
-<div id="modal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <h2 id="modal-title"></h2>
-    <p id="modal-details"></p>
-  </div>
-</div>
-</div>
+    <!-- 2025 Publications -->
+    <section class="content-section section-light">
+      <div class="container">
+        <h2 class="section-title">2025</h2>
+
+        <!-- SMILE (ASRU 2025) -->
+        <a href="/publications/1/" class="publication-item-link">
+          <div class="publication-item">
+            <div class="publication-thumbnail">
+              <img src="/static/images/metawhisper.png" alt="SMILE">
+            </div>
+            <div class="publication-info">
+              <h3 class="publication-title">SMILE: Speech-based Meta In-context Learning for Low-resource ASR</h3>
+              <p class="publication-authors"><strong>Ming-Hao Hsu</strong>, Hung-yi Lee</p>
+              <p class="publication-venue">ASRU 2025 <span class="venue-highlight">🏆 Best Student Paper Finalist</span></p>
+              <div class="publication-buttons" onclick="event.stopPropagation();">
+                <a href="https://arxiv.org/abs/2409.10429" class="pub-btn pub-btn-dark" target="_blank">
+                  <i class="fas fa-file-pdf"></i> Paper
+                </a>
+              </div>
+            </div>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- 2024 Publications -->
+    <section class="content-section">
+      <div class="container">
+        <h2 class="section-title">2024</h2>
+
+        <!-- Diffusion BC (ICML 2024) -->
+        <a href="/publications/2/" class="publication-item-link">
+          <div class="publication-item">
+            <div class="publication-thumbnail">
+              <img src="/static/images/dbc.png" alt="Diffusion BC">
+            </div>
+            <div class="publication-info">
+              <h3 class="publication-title">Diffusion Model-Augmented Behavioral Cloning</h3>
+              <p class="publication-authors">Shang-Fu Chen*, Hsiang-Chun Wang*, <strong>Ming-Hao Hsu</strong>, Chun-Mao Lai, Shao-Hua Sun</p>
+              <p class="publication-venue">ICML 2024</p>
+              <div class="publication-buttons" onclick="event.stopPropagation();">
+                <a href="https://arxiv.org/abs/2302.13335" class="pub-btn pub-btn-dark" target="_blank">
+                  <i class="fas fa-file-pdf"></i> Paper
+                </a>
+                <a href="https://nturobotlearninglab.github.io/dbc/" class="pub-btn pub-btn-dark" target="_blank">
+                  <i class="fas fa-globe"></i> Project
+                </a>
+                <a href="https://github.com/NTURobotLearningLab/dbc" class="pub-btn pub-btn-dark" target="_blank">
+                  <i class="fab fa-github"></i> Code
+                </a>
+              </div>
+            </div>
+          </div>
+        </a>
+
+        <!-- In-Context Learning (Interspeech 2024) -->
+        <a href="/publications/3/" class="publication-item-link">
+          <div class="publication-item">
+            <div class="publication-thumbnail">
+              <img src="/static/images/exploreicl.png" alt="In-Context Learning">
+            </div>
+            <div class="publication-info">
+              <h3 class="publication-title">Exploring In-Context Learning of Textless Speech Language Model for Speech Classification Tasks</h3>
+              <p class="publication-authors"><strong>Ming-Hao Hsu</strong>*, Kai-Wei Chang*, Shang-Wen Li, Hung-yi Lee</p>
+              <p class="publication-venue">Interspeech 2024</p>
+              <div class="publication-buttons" onclick="event.stopPropagation();">
+                <a href="https://arxiv.org/abs/2310.12477" class="pub-btn pub-btn-dark" target="_blank">
+                  <i class="fas fa-file-pdf"></i> Paper
+                </a>
+              </div>
+            </div>
+          </div>
+        </a>
+
+        <!-- GSQA (Interspeech 2024) -->
+        <a href="/publications/4/" class="publication-item-link">
+          <div class="publication-item">
+            <div class="publication-thumbnail">
+              <img src="/static/images/gsqa.png" alt="GSQA">
+            </div>
+            <div class="publication-info">
+              <h3 class="publication-title">GSQA: An End-to-End Model for Generative Spoken Question Answering</h3>
+              <p class="publication-authors">Min-Han Shih*, Ho-Lam Chung*, Yu-Chi Pai*, <strong>Ming-Hao Hsu</strong>, Guan-Ting Lin, Shang-Wen Li, Hung-yi Lee</p>
+              <p class="publication-venue">Interspeech 2024</p>
+              <div class="publication-buttons" onclick="event.stopPropagation();">
+                <a href="https://arxiv.org/abs/2312.09781" class="pub-btn pub-btn-dark" target="_blank">
+                  <i class="fas fa-file-pdf"></i> Paper
+                </a>
+                <a href="https://eric-lam.com/GSQA/" class="pub-btn pub-btn-dark" target="_blank">
+                  <i class="fas fa-globe"></i> Project
+                </a>
+              </div>
+            </div>
+          </div>
+        </a>
+
+      </div>
+    </section>
+
+    <!-- 2022 Publications -->
+    <section class="content-section section-light">
+      <div class="container">
+        <h2 class="section-title">2022</h2>
+
+        <!-- CUDA-DST (SIGDIAL 2022) -->
+        <a href="/publications/5/" class="publication-item-link">
+          <div class="publication-item">
+            <div class="publication-thumbnail">
+              <img src="/static/images/cudadst.png" alt="CUDA-DST">
+            </div>
+            <div class="publication-info">
+              <h3 class="publication-title">Controllable User Dialogue Act Augmentation for Dialogue State Tracking</h3>
+              <p class="publication-authors">Chun-Mao Lai*, <strong>Ming-Hao Hsu</strong>*, Chao-Wei Huang, Yun-Nung Chen</p>
+              <p class="publication-venue">SIGDIAL 2022</p>
+              <div class="publication-buttons" onclick="event.stopPropagation();">
+                <a href="https://arxiv.org/abs/2207.12757" class="pub-btn pub-btn-dark" target="_blank">
+                  <i class="fas fa-file-pdf"></i> Paper
+                </a>
+              </div>
+            </div>
+          </div>
+        </a>
+
+      </div>
+    </section>
 
     <footer class="footer py-3">
       <div class="container text-center">
-        <span>&copy; 2023 Ming-Hao Hsu. All rights reserved.</span>
+        <span>&copy; 2025 Ming-Hao Hsu. All rights reserved.</span>
       </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/static/js/script.js"></script>
     <script src="/static/js/dark-mode.js"></script>
-    
-<script src="/static/js/publications.js"></script>
-
   </body>
 </html>

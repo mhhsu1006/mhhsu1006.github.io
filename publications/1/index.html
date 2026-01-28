@@ -3,14 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Meta-Whisper: Speech-Based Meta-ICL for ASR on Low-Resource Languages - Ming-Hao Hsu</title>
+    <title>SMILE - Ming-Hao Hsu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
       rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <link
       href="/static/css/style.css"
@@ -20,9 +26,7 @@
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
       <div class="container">
-        <a class="navbar-brand" href="/"
-          >Ming-Hao Hsu</a
-        >
+        <a class="navbar-brand" href="/">Ming-Hao Hsu</a>
         <button
           class="navbar-toggler"
           type="button"
@@ -37,21 +41,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav me-auto">
             <li class="nav-item">
-              <a class="nav-link" href="/about/">About</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/research/">Research</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/publications/"
-                >Publications</a
-              >
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/blog/">Blog</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/contact/">Contact</a>
+              <a class="nav-link" href="/publications/">Publications</a>
             </li>
           </ul>
           <button
@@ -73,39 +63,108 @@
       </div>
     </nav>
 
-    <div class="container mt-4">
-<div class="container">
-  <h1 class="mb-4 text-center">Meta-Whisper: Speech-Based Meta-ICL for ASR on Low-Resource Languages</h1>
-  <div class="row justify-content-center">
-    <div class="col-md-8 text-center">
-      <img
-        src="/static/images/metawhisper.png"
-        alt="Paper structure"
-        class="img-fluid mb-4 paper-image"
-      />
+    <!-- Paper Header -->
+    <section class="pub-detail-header">
+      <div class="container">
+        <h1 class="pub-detail-title">SMILE: Speech-based Meta In-context Learning for Low-resource ASR</h1>
+        <p class="pub-detail-authors">
+          <a href="/">Ming-Hao Hsu</a>,
+          Hung-yi Lee
+        </p>
+        <p class="pub-detail-venue">ASRU 2025 · 🏆 Best Student Paper Finalist</p>
+        <div class="pub-detail-buttons">
+          <a href="https://arxiv.org/abs/2409.10429" class="pub-btn pub-btn-dark" target="_blank">
+            <i class="fas fa-file-pdf"></i> arXiv
+          </a>
+          <button class="pub-btn pub-btn-dark" onclick="openBibtexModal()">
+            <i class="fas fa-quote-right"></i> BibTeX
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Paper Image -->
+    <div class="pub-detail-image">
+      <img src="/static/images/metawhisper.png" alt="SMILE Framework">
     </div>
-  </div>
-  <div class="row justify-content-center">
-    <div class="col-md-10">
-      <p><strong>Authors:</strong> Ming-Hao Hsu*, Kuan Po Huang, Hung-yi Lee</p>
-      <p><strong>Journal:</strong> ArXiv Preprint</p>
-      <p><strong>Year:</strong> 2024</p>
-      <h2>Abstract</h2>
-      <p class="paper-abstract">This paper presents Meta-Whisper, a novel approach to improve automatic speech recognition (ASR) for low-resource languages using the Whisper model. By leveraging Meta In-Context Learning (Meta-ICL) and a k-Nearest Neighbors (KNN) algorithm for sample selection, Meta-Whisper enhances Whisper&#39;s ability to recognize speech in unfamiliar languages without extensive fine-tuning. Experiments on the ML-SUPERB dataset show that Meta-Whisper significantly reduces the Character Error Rate (CER) for low-resource languages compared to the original Whisper model. This method offers a promising solution for developing more adaptable multilingual ASR systems, particularly for languages with limited resources.</p>
+
+    <!-- Abstract Section -->
+    <section class="pub-detail-section section-light">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-10">
+            <h2>Abstract</h2>
+            <p class="paper-abstract">
+              This paper presents SMILE (formerly Meta-Whisper), a novel approach to improve automatic speech recognition (ASR) for low-resource languages using the Whisper model. By leveraging Meta In-Context Learning (Meta-ICL) and a k-Nearest Neighbors (KNN) algorithm for sample selection, SMILE enhances Whisper's ability to recognize speech in unfamiliar languages without extensive fine-tuning. Experiments on the ML-SUPERB dataset show that SMILE significantly reduces the Character Error Rate (CER) for low-resource languages compared to the original Whisper model. This method offers a promising solution for developing more adaptable multilingual ASR systems, particularly for languages with limited resources.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BibTeX Modal -->
+    <div id="bibtex-modal" class="bibtex-modal">
+      <div class="bibtex-modal-content">
+        <div class="bibtex-modal-header">
+          <h3>BibTeX Citation</h3>
+          <button class="bibtex-modal-close" onclick="closeBibtexModal()">&times;</button>
+        </div>
+        <pre id="bibtex-content"><code>@inproceedings{hsu2025smile,
+  title={SMILE: Speech-based Meta In-context Learning for Low-resource ASR},
+  author={Hsu, Ming-Hao and Lee, Hung-yi},
+  booktitle={IEEE Automatic Speech Recognition and Understanding Workshop (ASRU)},
+  year={2025}
+}</code></pre>
+        <button class="pub-btn pub-btn-dark bibtex-copy-btn" onclick="copyBibtex()">
+          <i class="fas fa-copy"></i> Copy to Clipboard
+        </button>
+      </div>
     </div>
-  </div>
-</div>
-</div>
 
     <footer class="footer py-3">
       <div class="container text-center">
-        <span>&copy; 2023 Ming-Hao Hsu. All rights reserved.</span>
+        <span>&copy; 2025 Ming-Hao Hsu. All rights reserved.</span>
       </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/static/js/script.js"></script>
     <script src="/static/js/dark-mode.js"></script>
-    
+    <script>
+      function openBibtexModal() {
+        document.getElementById('bibtex-modal').classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }
+      
+      function closeBibtexModal() {
+        document.getElementById('bibtex-modal').classList.remove('show');
+        document.body.style.overflow = '';
+      }
+      
+      function copyBibtex() {
+        const bibtex = document.getElementById('bibtex-content').innerText;
+        navigator.clipboard.writeText(bibtex).then(() => {
+          const btn = document.querySelector('.bibtex-copy-btn');
+          btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+          setTimeout(() => {
+            btn.innerHTML = '<i class="fas fa-copy"></i> Copy to Clipboard';
+          }, 2000);
+        });
+      }
+      
+      // Close modal when clicking outside
+      document.getElementById('bibtex-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+          closeBibtexModal();
+        }
+      });
+      
+      // Close modal with Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeBibtexModal();
+        }
+      });
+    </script>
   </body>
 </html>
