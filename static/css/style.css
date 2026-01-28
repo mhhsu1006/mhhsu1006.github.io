@@ -344,6 +344,46 @@ footer {
   opacity: 1;
 }
 
+/* Affiliations Section */
+.affiliations {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.affiliation-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  opacity: 0.7;
+}
+
+.affiliation-logo:hover {
+  opacity: 1;
+  transform: scale(1.05);
+}
+
+.affiliation-logo img {
+  height: 36px;
+  width: auto;
+  max-width: 120px;
+  object-fit: contain;
+}
+
+/* Specific sizing for different logo types */
+.affiliation-logo img[alt="Microsoft"] {
+  height: 32px;
+}
+
+.affiliation-logo img[alt="National Taiwan University"],
+.affiliation-logo img[alt="The Chinese University of Hong Kong"] {
+  height: 40px;
+}
+
 /* Link buttons similar to ShadowDraw style */
 .link-button {
   display: inline-flex;
@@ -848,6 +888,15 @@ body.dark-mode .social-icons img {
 }
 
 body.dark-mode .social-icon-box:hover img {
+  opacity: 1;
+}
+
+body.dark-mode .affiliation-logo {
+  opacity: 0.8;
+  filter: brightness(1.2);
+}
+
+body.dark-mode .affiliation-logo:hover {
   opacity: 1;
 }
 
