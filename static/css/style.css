@@ -57,6 +57,133 @@ h6 {
   color: #2563eb !important;
 }
 
+/* Mobile navbar toggler - Modern hamburger button */
+.navbar-toggler {
+  border: none;
+  padding: 0.5rem;
+  width: 44px;
+  height: 44px;
+  position: relative;
+  background: transparent;
+  border-radius: 10px;
+  transition: background-color 0.2s ease;
+}
+
+.navbar-toggler:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.navbar-toggler:focus {
+  box-shadow: none;
+  outline: none;
+}
+
+.navbar-toggler-icon {
+  background-image: none;
+  position: relative;
+  width: 22px;
+  height: 2px;
+  background-color: #1e293b;
+  display: block;
+  transition: all 0.3s ease;
+}
+
+.navbar-toggler-icon::before,
+.navbar-toggler-icon::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 22px;
+  height: 2px;
+  background-color: #1e293b;
+  transition: all 0.3s ease;
+}
+
+.navbar-toggler-icon::before {
+  top: -7px;
+}
+
+.navbar-toggler-icon::after {
+  top: 7px;
+}
+
+/* Animated X when menu is open */
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
+  background-color: transparent;
+}
+
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::before {
+  top: 0;
+  transform: rotate(45deg);
+}
+
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::after {
+  top: 0;
+  transform: rotate(-45deg);
+}
+
+/* Mobile menu styling */
+@media (max-width: 991.98px) {
+  .navbar {
+    padding: 0.75rem 0;
+  }
+  
+  .navbar > .container {
+    position: relative;
+  }
+  
+  .navbar-collapse {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #ffffff;
+    border-radius: 16px;
+    margin: 0.5rem 1rem;
+    padding: 0.5rem;
+    box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.2);
+    border: 1px solid #e2e8f0;
+  }
+  
+  .navbar-nav {
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem;
+  }
+  
+  .navbar-nav .nav-link {
+    font-size: 1.1rem;
+    font-weight: 600;
+    padding: 0.9rem 1.25rem;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .navbar-nav .nav-link:hover {
+    background-color: #f1f5f9;
+  }
+  
+  .navbar-nav .nav-link:active {
+    background-color: #e2e8f0;
+    transform: scale(0.98);
+  }
+  
+  /* Dark mode toggle in mobile menu */
+  .navbar-collapse #dark-mode-toggle {
+    margin: 0.5rem 0.5rem 0.5rem auto;
+  }
+  
+  /* Divider before dark mode toggle */
+  .navbar-collapse .navbar-nav {
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
 .card {
   border: 1px solid #e2e8f0;
   background-color: #ffffff;
@@ -527,6 +654,41 @@ body.dark-mode .hero-email {
 
 body.dark-mode .navbar {
   background-color: #161b22;
+}
+
+/* Dark mode mobile navbar */
+body.dark-mode .navbar-toggler:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .navbar-toggler-icon,
+body.dark-mode .navbar-toggler-icon::before,
+body.dark-mode .navbar-toggler-icon::after {
+  background-color: #c9d1d9;
+}
+
+body.dark-mode .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
+  background-color: transparent;
+}
+
+@media (max-width: 991.98px) {
+  body.dark-mode .navbar-collapse {
+    background-color: #161b22;
+    box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.5);
+    border-color: #30363d;
+  }
+  
+  body.dark-mode .navbar-nav .nav-link:hover {
+    background-color: #21262d;
+  }
+  
+  body.dark-mode .navbar-nav .nav-link:active {
+    background-color: #30363d;
+  }
+  
+  body.dark-mode .navbar-collapse .navbar-nav {
+    border-bottom-color: #30363d;
+  }
 }
 
 body.dark-mode footer {
