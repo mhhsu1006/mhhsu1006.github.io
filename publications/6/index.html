@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Diffusion Model-Augmented Behavioral Cloning - Ming-Hao Hsu</title>
+    <title>TASLA: Text-Aligned Speech Tokens with Multiple Layer-Aggregation - Ming-Hao Hsu</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -66,20 +66,14 @@
     <!-- Paper Header -->
     <section class="pub-detail-header">
       <div class="container">
-        <h1 class="pub-detail-title">Diffusion Model-Augmented Behavioral Cloning</h1>
+        <h1 class="pub-detail-title">TASLA: Text-Aligned Speech Tokens with Multiple Layer-Aggregation</h1>
         <p class="pub-detail-authors">
-          Shang-Fu Chen*, Hsiang-Chun Wang*, <a href="/">Ming-Hao Hsu</a>, Chun-Mao Lai, Shao-Hua Sun
+          <a href="/">Ming-Hao Hsu</a>, Liang-Hsuan Tseng, Hung-yi Lee, Zhizheng Wu
         </p>
-        <p class="pub-detail-venue">ICML 2024</p>
+        <p class="pub-detail-venue">arXiv 2025</p>
         <div class="pub-detail-buttons">
-          <a href="https://arxiv.org/abs/2302.13335" class="pub-btn pub-btn-dark" target="_blank">
+          <a href="https://arxiv.org/abs/2510.14934" class="pub-btn pub-btn-dark" target="_blank">
             <i class="fas fa-file-pdf"></i> Paper
-          </a>
-          <a href="https://nturobotlearninglab.github.io/dbc/" class="pub-btn pub-btn-dark" target="_blank">
-            <i class="fas fa-globe"></i> Project
-          </a>
-          <a href="https://github.com/NTURobotLearningLab/dbc" class="pub-btn pub-btn-dark" target="_blank">
-            <i class="fab fa-github"></i> Code
           </a>
           <button class="pub-btn pub-btn-dark" onclick="openBibtexModal()">
             <i class="fas fa-quote-right"></i> BibTeX
@@ -90,7 +84,7 @@
 
     <!-- Paper Image -->
     <div class="pub-detail-image">
-      <img src="/static/images/dbc.png" alt="Diffusion BC Framework">
+      <img src="/static/images/tasla.png" alt="TASLA Framework">
     </div>
 
     <!-- Abstract Section -->
@@ -100,7 +94,7 @@
           <div class="col-lg-10">
             <h2>Abstract</h2>
             <p class="paper-abstract">
-              Imitation learning addresses the challenge of learning by observing an expert's demonstrations without access to reward signals from environments. Most existing imitation learning methods that do not require interacting with environments either model the expert distribution as the conditional probability p(a|s) (e.g., behavioral cloning, BC) or the joint probability p(s, a). Despite the simplicity of modeling the conditional probability with BC, it usually struggles with generalization. While modeling the joint probability can improve generalization performance, the inference procedure is often time-consuming, and the model can suffer from manifold overfitting. This work proposes an imitation learning framework that benefits from modeling both the conditional and joint probability of the expert distribution. Our proposed Diffusion Model-Augmented Behavioral Cloning (DBC) employs a diffusion model trained to model expert behaviors and learns a policy to optimize both the BC loss (conditional) and our proposed diffusion model loss (joint). DBC outperforms baselines in various continuous control tasks in navigation, robot arm manipulation, dexterous manipulation, and locomotion. We design additional experiments to verify the limitations of modeling either the conditional probability or the joint probability of the expert distribution, as well as compare different generative models. Ablation studies justify the effectiveness of our design choices.
+              We propose Text-Aligned Speech Tokens with Multiple Layer-Aggregation (TASLA), which is a text-aligned speech tokenization framework that aims to address the problem that under a low-frame-rate and text-aligned regime, single-source speech tokens may lose acoustic details during reconstruction. On the other hand, this paper further explains how different encoder layers collaborate to capture comprehensive acoustic features for tokenization. Previous work, TASTE, proposed the text-aligned speech tokenization framework, which is a LM-friendly architecture, but struggles to capture acoustic details. We address this trade-off with two components: Multi-Layer Dynamic Attention (MLDA), which lets each text position adaptively mix shallow/deep features from a frozen speech encoder, and Finite Scalar Quantization (FSQ), a simple per-dimension discretization with smooth optimization. At about 2.62 Hz (tokens/s), TASLA consistently improves prosody and achieves competitive quality over TASTE on in-domain (LibriSpeech) and OOD (EXPRESSO, Voxceleb) sets. We further demonstrate that dynamic layer mixing is correlated with spectral flux and explains why MLDA preserves prosody under a low frame rate with extreme feature compression.
             </p>
           </div>
         </div>
@@ -114,11 +108,11 @@
           <h3>BibTeX Citation</h3>
           <button class="bibtex-modal-close" onclick="closeBibtexModal()">&times;</button>
         </div>
-        <pre id="bibtex-content"><code>@inproceedings{chen2024diffusion,
-  title={Diffusion Model-Augmented Behavioral Cloning},
-  author={Chen, Shang-Fu and Wang, Hsiang-Chun and Hsu, Ming-Hao and Lai, Chun-Mao and Sun, Shao-Hua},
-  booktitle={Forty-first International Conference on Machine Learning (ICML)},
-  year={2024}
+        <pre id="bibtex-content"><code>@article{hsu2025tasla,
+  title={TASLA: Text-Aligned Speech Tokens with Multiple Layer-Aggregation},
+  author={Hsu, Ming-Hao and Tseng, Liang-Hsuan and Lee, Hung-yi and Wu, Zhizheng},
+  journal={arXiv preprint arXiv:2510.14934},
+  year={2025}
 }</code></pre>
         <button class="pub-btn pub-btn-dark bibtex-copy-btn" onclick="copyBibtex()">
           <i class="fas fa-copy"></i> Copy to Clipboard
