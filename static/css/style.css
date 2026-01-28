@@ -59,66 +59,66 @@ h6 {
 
 /* Mobile navbar toggler - Modern hamburger button */
 .navbar-toggler {
-  border: none;
+  border: none !important;
   padding: 0.5rem;
   width: 44px;
   height: 44px;
   position: relative;
-  background: transparent;
+  background: transparent !important;
   border-radius: 10px;
   transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .navbar-toggler:hover {
-  background-color: rgba(0, 0, 0, 0.05);
+  background-color: rgba(0, 0, 0, 0.05) !important;
 }
 
 .navbar-toggler:focus {
-  box-shadow: none;
+  box-shadow: none !important;
   outline: none;
 }
 
 .navbar-toggler-icon {
-  background-image: none;
+  background-image: none !important;
   position: relative;
   width: 22px;
-  height: 2px;
-  background-color: #1e293b;
-  display: block;
-  transition: all 0.3s ease;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.navbar-toggler-icon::before,
-.navbar-toggler-icon::after {
+/* The three hamburger lines */
+.navbar-toggler-icon::before {
   content: '';
   position: absolute;
-  left: 0;
   width: 22px;
   height: 2px;
   background-color: #1e293b;
+  border-radius: 2px;
   transition: all 0.3s ease;
-}
-
-.navbar-toggler-icon::before {
-  top: -7px;
-}
-
-.navbar-toggler-icon::after {
-  top: 7px;
+  box-shadow: 
+    0 -7px 0 0 #1e293b,
+    0 7px 0 0 #1e293b;
 }
 
 /* Animated X when menu is open */
-.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
-  background-color: transparent;
-}
-
 .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::before {
-  top: 0;
+  background-color: #1e293b;
   transform: rotate(45deg);
+  box-shadow: none;
 }
 
 .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::after {
-  top: 0;
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 2px;
+  background-color: #1e293b;
+  border-radius: 2px;
   transform: rotate(-45deg);
 }
 
@@ -658,17 +658,23 @@ body.dark-mode .navbar {
 
 /* Dark mode mobile navbar */
 body.dark-mode .navbar-toggler:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
-body.dark-mode .navbar-toggler-icon,
-body.dark-mode .navbar-toggler-icon::before,
-body.dark-mode .navbar-toggler-icon::after {
+body.dark-mode .navbar-toggler-icon::before {
   background-color: #c9d1d9;
+  box-shadow: 
+    0 -7px 0 0 #c9d1d9,
+    0 7px 0 0 #c9d1d9;
 }
 
-body.dark-mode .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
-  background-color: transparent;
+body.dark-mode .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::before {
+  background-color: #c9d1d9;
+  box-shadow: none;
+}
+
+body.dark-mode .navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::after {
+  background-color: #c9d1d9;
 }
 
 @media (max-width: 991.98px) {
