@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Is Text All You Need? Text as a Universal Information Bottleneck for Speech LLMs - Ming-Hao Hsu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="/static/css/style.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+      <div class="container">
+        <a class="navbar-brand" href="/">Ming-Hao Hsu</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/publications/">Publications</a>
+            </li>
+          </ul>
+          <button
+            id="dark-mode-toggle"
+            class="btn btn-sm btn-outline-secondary"
+          >
+            <img
+              src="/static/images/darkmode_icon.svg"
+              alt="Dark Mode"
+              class="mode-icon dark-icon"
+            />
+            <img
+              src="/static/images/lightmode_icon.svg"
+              alt="Light Mode"
+              class="mode-icon light-icon"
+            />
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Paper Header -->
+    <section class="pub-detail-header">
+      <div class="container">
+        <h1 class="pub-detail-title">Is Text All You Need? Text as a Universal Information Bottleneck for Speech LLMs</h1>
+        <p class="pub-detail-authors">
+          <a href="/">Ming-Hao Hsu</a>, Yuxuan Hu, Shujie Liu, Jinyu Li, Yan Lu, Zhizheng Wu
+        </p>
+        <p class="pub-detail-venue">NeurIPS 2026</p>
+        <div class="pub-detail-buttons">
+          <a href="https://arxiv.org/abs/2606.09366" class="pub-btn pub-btn-dark" target="_blank" rel="noopener noreferrer">
+            <i class="fas fa-file-pdf" aria-hidden="true"></i> Paper
+          </a>
+          <a href="https://openreview.net/forum?id=ux19efk62R" class="pub-btn pub-btn-dark" target="_blank" rel="noopener noreferrer">
+            <i class="fas fa-external-link-alt" aria-hidden="true"></i> OpenReview
+          </a>
+          <button class="pub-btn pub-btn-dark" onclick="openBibtexModal()">
+            <i class="fas fa-quote-right"></i> BibTeX
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Paper Image -->
+    <div class="pub-detail-image">
+      <img src="/static/images/cgate.png" alt="C-Gate architecture connecting a speech encoder to an LLM through convex mixtures of frozen token embeddings">
+    </div>
+
+    <!-- Research Overview -->
+    <section class="pub-detail-section section-light">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-10">
+            <h2>Overview</h2>
+            <p class="paper-abstract">
+              Convex Gate (C-Gate) connects a speech encoder to a pretrained language model using continuous mixtures of the model&#x27;s frozen token embeddings. This constrains the speech interface to the vocabulary&#x27;s convex hull without requiring discrete transcription. A shared, partially adapted decoder supports speech recognition, emotion recognition, and spoken reasoning. We analyze where task information is stored in the bridge sequence and how the decoder accesses it, while also evaluating changes in its text capabilities. The study examines how a fixed text codebook can carry both linguistic content and acoustic information through continuous, speech-dependent representations.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BibTeX Modal -->
+    <div id="bibtex-modal" class="bibtex-modal">
+      <div class="bibtex-modal-content">
+        <div class="bibtex-modal-header">
+          <h3>BibTeX Citation</h3>
+          <button class="bibtex-modal-close" onclick="closeBibtexModal()">&times;</button>
+        </div>
+        <pre id="bibtex-content"><code>@inproceedings{hsu2026text,
+  title={Is Text All You Need? Text as a Universal Information Bottleneck for Speech {LLMs}},
+  author={Hsu, Ming-Hao and Hu, Yuxuan and Liu, Shujie and Li, Jinyu and Lu, Yan and Wu, Zhizheng},
+  booktitle={Advances in Neural Information Processing Systems},
+  year={2026},
+  eprint={2606.09366},
+  archivePrefix={arXiv},
+  url={https://arxiv.org/abs/2606.09366}
+}</code></pre>
+        <button class="pub-btn pub-btn-dark bibtex-copy-btn" onclick="copyBibtex()">
+          <i class="fas fa-copy"></i> Copy to Clipboard
+        </button>
+      </div>
+    </div>
+
+    <footer class="footer py-3">
+      <div class="container text-center">
+        <span>&copy; 2026 Ming-Hao Hsu. All rights reserved.</span>
+      </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/script.js"></script>
+    <script src="/static/js/dark-mode.js"></script>
+    <script>
+      function openBibtexModal() {
+        document.getElementById('bibtex-modal').classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }
+      
+      function closeBibtexModal() {
+        document.getElementById('bibtex-modal').classList.remove('show');
+        document.body.style.overflow = '';
+      }
+      
+      function copyBibtex() {
+        const bibtex = document.getElementById('bibtex-content').innerText;
+        navigator.clipboard.writeText(bibtex).then(() => {
+          const btn = document.querySelector('.bibtex-copy-btn');
+          btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+          setTimeout(() => {
+            btn.innerHTML = '<i class="fas fa-copy"></i> Copy to Clipboard';
+          }, 2000);
+        });
+      }
+      
+      // Close modal when clicking outside
+      document.getElementById('bibtex-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+          closeBibtexModal();
+        }
+      });
+      
+      // Close modal with Escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeBibtexModal();
+        }
+      });
+    </script>
+  </body>
+</html>
