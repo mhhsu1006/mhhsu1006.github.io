@@ -1,0 +1,53 @@
+WEBVTT
+
+00:00:14.106 --> 00:00:17.989
+ConvexLLM listens to speech, and answers in text.
+
+00:00:19.389 --> 00:00:24.786
+Most speech language models feed audio
+into a text LLM through a learned adapter.
+
+00:00:25.086 --> 00:00:30.590
+Its outputs can land where no text token lives,
+and the decoder has to learn to read them.
+
+00:00:31.890 --> 00:00:35.261
+ConvexLLM replaces the adapter with C-Gate.
+
+00:00:35.561 --> 00:00:42.345
+For each audio position, it picks 16 rows of the
+LLM's frozen embedding table, and weights them.
+
+00:00:42.645 --> 00:00:45.376
+The weights are non-negative and sum to one,
+
+00:00:45.376 --> 00:00:49.536
+so the result always stays inside
+the hull of real text embeddings.
+
+00:00:50.936 --> 00:00:56.589
+Position by position, speech becomes a path
+through embeddings the LLM already knows.
+
+00:01:02.258 --> 00:01:09.000
+The full model pairs a Whisper-large-v3
+encoder with a Qwen3.5-9B decoder.
+
+00:01:09.300 --> 00:01:14.121
+Text embeddings and the output head stay
+frozen in all three training stages.
+
+00:01:15.821 --> 00:01:24.930
+On VoiceBench, ConvexLLM averages 75.36,
+ahead of Qwen2.5-Omni and MiMo-Audio.
+
+00:01:25.230 --> 00:01:28.388
+The largest gains come on
+spoken knowledge and reasoning.
+
+00:01:28.688 --> 00:01:33.402
+And on MMAU test-mini, it reaches 62.5%.
+
+00:01:34.902 --> 00:01:40.812
+ConvexLLM. Code and model weights are
+coming soon, and the paper is on arXiv.

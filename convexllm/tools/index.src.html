@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ConvexLLM: Scaling Convex-Hull Speech Interfaces to General-Purpose Audio Intelligence</title>
+  <meta name="description" content="ConvexLLM connects an audio encoder to a language model through C-Gate, which represents each audio position as a convex combination of the decoder's frozen text embeddings.">
+  <meta name="author" content="Ming-Hao Hsu, Shujie Liu, Yuxuan Hu, Yuxiang Wang, Yingda Shen, Jinyu Li, Zhizheng Wu">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#ffffff">
+  <!-- Social preview. Set SITE_URL in tools/build.mjs to the final GitHub Pages address and rebuild. -->
+  <link rel="canonical" href="{{SITE_URL}}">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ConvexLLM: Scaling Convex-Hull Speech Interfaces to General-Purpose Audio Intelligence">
+  <meta property="og:description" content="C-Gate represents audio as convex combinations of a language model's frozen text embeddings. 75.36 on VoiceBench, 62.50% on MMAU Test-mini.">
+  <meta property="og:image" content="{{SITE_URL}}assets/img/social-card.png">
+  <meta property="og:url" content="{{SITE_URL}}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="{{SITE_URL}}assets/img/social-card.png">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/source-serif-4-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/inter-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/katex/katex.min.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <script src="assets/site.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<nav class="topnav" aria-label="Sections">
+  <div class="topnav-inner">
+    <a class="topnav-name" href="#top">ConvexLLM</a>
+    <div class="topnav-links">
+      <a href="#overview">Overview</a>
+      <a href="#method">Method</a>
+      <a href="#explore">C-Gate</a>
+      <a href="#results">Results</a>
+      <a href="#citation">BibTeX</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+<header class="masthead" id="top">
+  <p class="kicker">arXiv:2610.23539 &nbsp;·&nbsp; cs.CL &nbsp;·&nbsp; October 2026</p>
+  <h1><span class="h1-name">ConvexLLM:</span> Scaling Convex‑Hull Speech Interfaces to General‑Purpose Audio Intelligence</h1>
+
+  <p class="authors">
+    <span>Ming-Hao Hsu<sup>1</sup></span>
+    <span>Shujie Liu<sup>3</sup></span>
+    <span>Yuxuan Hu<sup>2</sup></span>
+    <span>Yuxiang Wang<sup>1</sup></span>
+    <span>Yingda Shen<sup>1</sup></span>
+    <span>Jinyu Li<sup>2</sup></span>
+    <span>Zhizheng Wu<sup>1</sup></span>
+  </p>
+  <p class="affils">
+    <span><sup>1</sup>The Chinese University of Hong Kong, Shenzhen</span>
+    <span><sup>2</sup>Microsoft Research</span>
+    <span><sup>3</sup>Microsoft Research Asia</span>
+  </p>
+
+  <div class="links">
+    <a class="btn" href="https://arxiv.org/abs/2610.23539" target="_blank" rel="noopener">{{ICON_ARXIV}}<span>arXiv</span></a>
+    <a class="btn" href="https://arxiv.org/pdf/2610.23539" target="_blank" rel="noopener">{{ICON_PDF}}<span>PDF</span></a>
+    <a class="btn" href="#video">{{ICON_PLAY}}<span>Video</span></a>
+    <a class="btn" id="link-code" aria-disabled="true">{{ICON_CODE}}<span>Code</span><em>soon</em></a>
+    <a class="btn" id="link-model" aria-disabled="true">{{ICON_BOX}}<span>Weights</span><em>soon</em></a>
+    <a class="btn" href="#citation">{{ICON_QUOTE}}<span>BibTeX</span></a>
+  </div>
+
+  <div class="logos" aria-label="Institutions">
+    <img src="assets/img/cuhk-shenzhen.png" alt="The Chinese University of Hong Kong, Shenzhen" height="34">
+    <img src="assets/img/microsoft.png" alt="Microsoft" height="30">
+  </div>
+</header>
+
+<figure class="teaser wide" id="video">
+  <video controls preload="metadata" playsinline poster="assets/video/poster.jpg">
+    <source src="assets/video/convexllm.mp4" type="video/mp4">
+    <track kind="captions" src="assets/video/convexllm.en.vtt" srclang="en" label="English" default>
+    Your browser cannot play this video. <a href="assets/video/convexllm.mp4">Download the MP4</a>.
+  </video>
+  <figcaption>ConvexLLM in under two minutes. English captions can be turned off in the player.</figcaption>
+</figure>
+
+<section class="prose" id="overview">
+  <h2>Overview</h2>
+  <p class="tldr"><b>In brief</b> C-Gate feeds audio to a language model as convex combinations of the model's own frozen text embeddings, so every audio vector lies inside the region the decoder was pretrained on.</p>
+  <p>Most speech and audio language models connect an audio encoder to a text-pretrained decoder through an MLP or a Q-Former. Those interfaces can place audio features anywhere in the decoder's input space, and the decoder has to learn to read them.</p>
+  <p>ConvexLLM uses a different interface, C-Gate. For each pooled audio position, C-Gate scores the decoder's vocabulary, keeps the 16 best rows of the frozen text-embedding table, and mixes them with non-negative weights that sum to one. The result is continuous, but it is always a convex combination of real text embeddings.</p>
+  <p>With a Whisper-large-v3 encoder and a Qwen3.5-9B decoder, ConvexLLM reaches <b>75.36</b> on an eleven-task VoiceBench aggregate, the highest among the open-weight models compared, and <b>62.50%</b> on MMAU Test-mini. The largest gains are on spoken knowledge and reasoning. In a controlled comparison with a 2B decoder, C-Gate also scores higher than MLP and Q-Former interfaces on aggregate spoken-language performance, while its text-task performance stays close to the MLP interface.</p>
+
+  <dl class="facts">
+    <div><dt>75.36</dt><dd>VoiceBench, mean of 11 tasks</dd></div>
+    <div><dt>62.50%</dt><dd>MMAU Test-mini accuracy</dd></div>
+    <div><dt>16</dt><dd>text embeddings mixed per audio position</dd></div>
+    <div><dt>Frozen</dt><dd>embedding table and LM head, all stages</dd></div>
+  </dl>
+</section>
+
+<section id="method">
+  <div class="prose"><h2>Method</h2></div>
+
+  <figure class="wide figure arch">
+    {{PARTIAL_ARCH}}
+    <figcaption><b>Figure 1.</b> Audio is encoded by Whisper-large-v3, mean-pooled with stride 4, and mapped by C-Gate to continuous embeddings. The task prompt is looked up in the same frozen table <i>E</i>, so audio and text enter the Qwen3.5-9B decoder in one shared input space. <i>E</i> and the LM head are never updated.</figcaption>
+  </figure>
+
+  <div class="prose">
+    <h3>C-Gate</h3>
+    <p>Let <math-tex>h_t</math-tex> be the pooled encoder output at position <math-tex>t</math-tex> and <math-tex>\mathbf{E}</math-tex> the decoder's text-embedding table. C-Gate projects the audio to a <math-tex>d</math-tex>-dimensional query, scores every vocabulary row against a learned key projection of <math-tex>\mathbf{E}</math-tex>, and keeps the top 16:</p>
+    <math-tex display>s_{t,v}=\frac{q_t^{\top}k_v}{\sqrt{d}\,\tau_r},\qquad q_t=W_q h_t,\quad k_v=W_k\mathbf{E}_v,\qquad S_t=\operatorname{top\text{-}16}_{v}\; s_{t,v}</math-tex>
+    <p>The selected scores are normalised with a softmax at temperature <math-tex>\tau_m=0.7</math-tex>, and the output mixes the <em>original</em> embedding rows, not their projections:</p>
+    <math-tex display>\tilde{e}_t=\sum_{v\in S_t}\alpha_{t,v}\,\mathbf{E}_v,\qquad \alpha_{t,v}\ge 0,\quad \sum_{v\in S_t}\alpha_{t,v}=1</math-tex>
+    <p>So <math-tex>\tilde{e}_t</math-tex> always lies in the convex hull of 16 vectors the decoder already knows. The key projection only decides <em>which</em> rows are used. The values passed to the decoder come straight from <math-tex>\mathbf{E}</math-tex>.</p>
+  </div>
+
+  <figure class="wide figure router">
+    {{PARTIAL_ROUTER}}
+    <figcaption><b>Figure 2.</b> Inside C-Gate. Scores are computed over the whole vocabulary. The top-16 indices select original rows of <i>E</i>, which are combined with softmax weights.</figcaption>
+  </figure>
+
+  <div class="prose">
+    <h3>Training</h3>
+    <p>Training runs in three stages that progressively unfreeze the model. The text-embedding table and the LM head stay frozen throughout, so the interface keeps pointing into a fixed vocabulary space.</p>
+    <table class="stages">
+      <thead><tr><th>Stage</th><th>Trained</th><th>Frozen</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>C-Gate</td><td>Encoder, decoder blocks, <i>E</i>, LM head</td></tr>
+        <tr><td>2</td><td>C-Gate, Whisper encoder</td><td>Decoder blocks, <i>E</i>, LM head</td></tr>
+        <tr><td>3</td><td>C-Gate, encoder, Qwen3.5 decoder blocks</td><td><i>E</i>, LM head</td></tr>
+      </tbody>
+    </table>
+    <p class="small">Main results use the Stage 3 checkpoint at step 7,500.</p>
+  </div>
+</section>
+
+<section id="explore">
+  <div class="prose">
+    <h2>C-Gate, position by position</h2>
+    <p>Each dot is a text embedding. For the current audio position, the 16 selected rows are outlined and their convex hull is shaded. The dark point is their weighted mixture. Play the clip, or drag along the waveform.</p>
+  </div>
+  <div class="explorer wide" id="explorer">
+    <div class="ex-map">
+      <svg id="ex-svg" viewBox="0 0 760 420" role="img" aria-label="Text embeddings, the selected 16 candidates, and the mixed audio vector"></svg>
+    </div>
+    <aside class="ex-side" aria-live="polite">
+      <div class="ex-time"><span>Position</span><b id="ex-t">—</b></div>
+      <ol id="ex-top" class="ex-top"></ol>
+      <p class="ex-sum"><span id="ex-rest">—</span> on the other candidates</p>
+    </aside>
+    <div class="ex-bar">
+      <button type="button" id="ex-play" class="ex-play" aria-label="Play">{{ICON_PLAY}}</button>
+      <svg id="ex-wave" viewBox="0 0 800 56" preserveAspectRatio="none" role="slider" tabindex="0" aria-label="Audio position" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></svg>
+      <span class="ex-q" id="ex-q"></span>
+    </div>
+    <script id="cgate-data" type="application/json">{{DEMO_JSON}}</script>
+    <audio id="ex-audio" src="assets/demo/question.mp3" preload="auto"></audio>
+  </div>
+  <p class="figure-note wide">Two-dimensional layout for illustration. The geometry is exact in the sense that matters: each dark point is the weighted sum of its 16 outlined candidates.</p>
+</section>
+
+<section id="results">
+  <div class="prose">
+    <h2>Results</h2>
+    <p>VoiceBench covers open-ended spoken instructions, spoken knowledge, reasoning, instruction following and safety. The aggregate is the equal-weight mean of eleven task scores. All numbers are from Table 1 of the paper.</p>
+  </div>
+
+  <figure class="wide figure">
+    <div class="barchart" role="img" aria-label="VoiceBench overall score by model">{{BARCHART}}</div>
+    <figcaption><b>Figure 3.</b> VoiceBench aggregate across the eleven open-weight systems in Table 1.</figcaption>
+  </figure>
+
+  <div class="wide table-wrap">
+    <div class="table-head">
+      <h3>VoiceBench by task</h3>
+      <a class="quiet-link" href="assets/data/benchmark-results.csv" download>Full Table 1 (CSV)</a>
+    </div>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="VoiceBench results by task">
+      {{RESULTS_TABLE}}
+    </div>
+    <p class="small">Click a column to sort. Bold marks the best score in each column. AlpacaEval, AlpacaEval-Full, CommonEval and WildVoice are judged quality scores scaled to 100. SD-QA is judged correctness. AdvBench is refusal rate. IFEval is instruction-following accuracy. OpenBookQA, MMSU, SpeechMMLU and BBH are accuracy. MMAU and LibriSpeech results are in the paper and the CSV.</p>
+  </div>
+</section>
+
+<section class="prose" id="citation">
+  <h2>BibTeX</h2>
+  <div class="bib">
+    <button type="button" id="copy-bib">Copy</button>
+    <pre id="bib-text">{{BIBTEX}}</pre>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="logos small">
+      <img src="assets/img/cuhk-shenzhen.png" alt="The Chinese University of Hong Kong, Shenzhen" height="26">
+      <img src="assets/img/microsoft.png" alt="Microsoft" height="22">
+    </div>
+    <p>ConvexLLM · Hsu et al., 2026 · <a href="https://arxiv.org/abs/2610.23539" target="_blank" rel="noopener">arXiv:2610.23539</a></p>
+  </div>
+</footer>
+</body>
+</html>
