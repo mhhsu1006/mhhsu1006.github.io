@@ -84,6 +84,13 @@
   <figcaption>ConvexLLM in under two minutes. English captions can be turned off in the player.</figcaption>
 </figure>
 
+<section class="highlights" id="highlights" aria-label="Key results">
+  <figure class="wide figure">
+    <div class="barchart" role="img" aria-label="VoiceBench overall score by model">{{BARCHART}}</div>
+    <figcaption><b>Figure 1.</b> VoiceBench aggregate across the eleven open-weight systems in Table 1.</figcaption>
+  </figure>
+</section>
+
 <section class="prose" id="overview">
   <h2>Overview</h2>
   <p class="tldr"><b>In brief</b> C-Gate feeds audio to a language model as convex combinations of the model's own frozen text embeddings, so every audio vector lies inside the region the decoder was pretrained on.</p>
@@ -104,7 +111,7 @@
 
   <figure class="wide figure arch">
     {{PARTIAL_ARCH}}
-    <figcaption><b>Figure 1.</b> Audio is encoded by Whisper-large-v3, mean-pooled with stride 4, and mapped by C-Gate to continuous embeddings. The task prompt is looked up in the same frozen table <i>E</i>, so audio and text enter the Qwen3.5-9B decoder in one shared input space. <i>E</i> and the LM head are never updated.</figcaption>
+    <figcaption><b>Figure 2.</b> Audio is encoded by Whisper-large-v3, mean-pooled with stride 4, and mapped by C-Gate to continuous embeddings. The task prompt is looked up in the same frozen table <i>E</i>, so audio and text enter the Qwen3.5-9B decoder in one shared input space. <i>E</i> and the LM head are never updated.</figcaption>
   </figure>
 
   <div class="prose">
@@ -118,7 +125,7 @@
 
   <figure class="wide figure router">
     {{PARTIAL_ROUTER}}
-    <figcaption><b>Figure 2.</b> Inside C-Gate. Scores are computed over the whole vocabulary. The top-16 indices select original rows of <i>E</i>, which are combined with softmax weights.</figcaption>
+    <figcaption><b>Figure 3.</b> Inside C-Gate. Scores are computed over the whole vocabulary. The top-16 indices select original rows of <i>E</i>, which are combined with softmax weights.</figcaption>
   </figure>
 
   <div class="prose">
@@ -167,10 +174,7 @@
     <p>VoiceBench covers open-ended spoken instructions, spoken knowledge, reasoning, instruction following and safety. The aggregate is the equal-weight mean of eleven task scores. All numbers are from Table 1 of the paper.</p>
   </div>
 
-  <figure class="wide figure">
-    <div class="barchart" role="img" aria-label="VoiceBench overall score by model">{{BARCHART}}</div>
-    <figcaption><b>Figure 3.</b> VoiceBench aggregate across the eleven open-weight systems in Table 1.</figcaption>
-  </figure>
+
 
   <div class="wide table-wrap">
     <div class="table-head">

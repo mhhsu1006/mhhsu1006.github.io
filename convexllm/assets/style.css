@@ -102,6 +102,10 @@ h1 { font-size: clamp(30px, 4.2vw, 44px); line-height: 1.14; margin: 0 0 26px; f
 .logos { display: flex; justify-content: center; align-items: center; gap: 44px; flex-wrap: wrap; }
 .logos img { width: auto; }
 
+/* ---------- key results ---------- */
+.highlights { max-width: var(--wide); margin: 52px auto 0; }
+.highlights > .figure { margin-top: 0; margin-bottom: 0; }
+
 /* ---------- teaser ---------- */
 .teaser { margin-top: 56px; max-width: calc(var(--wide) - 2 * var(--gutter)); margin-left: auto; margin-right: auto; }
 @media (max-width: 1128px) { .teaser { margin-left: var(--gutter); margin-right: var(--gutter); } }
@@ -217,6 +221,7 @@ table.results thead th[aria-sort="descending"] button::after { content: "↓"; }
 table.results thead th[aria-sort="ascending"], table.results thead th[aria-sort="descending"] { color: var(--ink); }
 table.results .num { text-align: right; }
 table.results tbody th { text-align: left; font-weight: 400; color: var(--ink); position: sticky; left: 0; background: #fff; }
+table.results thead th:first-child { position: sticky; left: 0; z-index: 2; background: #fff; text-align: left; padding-left: 10px; }
 table.results tbody tr + tr > * { border-top: 1px solid #eef0f3; }
 table.results td b { font-weight: 650; color: var(--ink); }
 table.results .overall { border-left: 1px solid var(--rule); }
