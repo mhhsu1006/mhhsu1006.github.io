@@ -105,6 +105,7 @@ h1 { font-size: clamp(30px, 4.2vw, 44px); line-height: 1.14; margin: 0 0 26px; f
 /* ---------- key results ---------- */
 .highlights { max-width: var(--wide); margin: 52px auto 0; }
 .highlights > .figure { margin-top: 0; margin-bottom: 0; }
+.highlights figcaption { text-align: center; }
 
 /* ---------- teaser ---------- */
 .teaser { margin-top: 56px; max-width: calc(var(--wide) - 2 * var(--gutter)); margin-left: auto; margin-right: auto; }
