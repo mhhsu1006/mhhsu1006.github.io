@@ -1,0 +1,8 @@
+{
+  "name": "project-page-tools",
+  "private": true,
+  "type": "module",
+  "scripts": { "build": "node build.mjs" },
+  "dependencies": { "katex": "^0.16.11" },
+  "devDependencies": { "playwright": "^1.48.0" }
+}

@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Geometric Alignment cover</title>
+<!-- Edit this file, then run: node render_cover.mjs  (writes assets/video/poster.jpg and assets/img/cover-video.png without the band,
+     assets/img/cover-threads.png and assets/img/social-card.png with the band).
+     Designed at 1920x1080. The heatmap, curves and attention trace are the paper's data (assets/data/results.json). -->
+<style>
+@font-face { font-family: S; src: url(../assets/fonts/source-serif-4-latin-opsz-normal.woff2); font-weight: 200 900; }
+@font-face { font-family: I; src: url(../assets/fonts/inter-latin-opsz-normal.woff2); font-weight: 100 900; }
+:root { --ink: #15203b; --muted: #5d6576; --blue: #2456a6; --rule: #dfe3ea; }
+html, body { margin: 0; background: #fff; }
+#c { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: #fff; color: var(--ink); font-family: I, sans-serif; }
+#head { position: absolute; left: 110px; top: 58px; }
+h1 { font: 600 82px/1.02 S, serif; letter-spacing: -.012em; margin: 0; color: var(--blue); }
+.sub { font: 400 36px/1.25 S, serif; margin-top: 14px; color: var(--ink); }
+.logos { position: absolute; right: 110px; top: 70px; display: flex; flex-direction: column; align-items: flex-end; gap: 24px; }
+.logos img:first-child { height: 60px; }
+.logos img:last-child { height: 42px; }
+#fig { position: absolute; left: 110px; top: 330px; width: 1700px; height: 530px; }
+#fig text { font-family: I, sans-serif; }
+#band { position: absolute; left: 110px; right: 110px; top: 892px; border-top: 2px solid var(--ink); display: flex; justify-content: space-between; align-items: flex-end; padding-top: 28px; }
+.stats { display: flex; align-items: flex-end; }
+.stat { padding-right: 44px; margin-right: 44px; border-right: 1px solid var(--rule); }
+.stat:last-child { border-right: 0; margin-right: 0; padding-right: 0; }
+.stat .n { font: 600 66px/1 S, serif; font-variant-numeric: lining-nums tabular-nums; color: var(--ink); }
+.stat:nth-child(1) .n { color: #1f77b4; }
+.stat:nth-child(3) .n { color: var(--blue); }
+.stat .l { font: 600 24px/1.2 I, sans-serif; color: var(--muted); margin-top: 10px; }
+/* two versions, chosen by render_cover.mjs:
+   .video  video cover, no number band, figure centred in the freed space
+   .promo  promo cover (Threads, X, link previews), the four numbers spread across the band */
+.video #band { display: none; }
+.video #fig { top: 410px; }
+.promo .stats { width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); align-items: end; }
+.promo .stat { margin: 0; padding: 0 0 0 48px; border-right: 0; border-left: 1px solid var(--rule); }
+.promo .stat:first-child { padding-left: 0; border-left: 0; }
+</style>
+</head>
+<body>
+<div id="c">
+  <div id="head">
+    <h1>Geometric Alignment without<br>Functional Equivalence</h1>
+    <div class="sub">A Layer-wise Analysis of the Speech–Text Modality Gap</div>
+  </div>
+  <div class="logos"><img src="../assets/img/cuhk-shenzhen.png" alt=""><img src="../assets/img/bytedance.png" alt=""></div>
+  <svg id="fig" viewBox="0 0 1700 530"></svg>
+  <div id="band">
+    <div class="stats">
+      <div class="stat"><div class="n">12.8</div><div class="l">Points lost to speech</div></div>
+      <div class="stat"><div class="n">10–21</div><div class="l">Layers aligned</div></div>
+      <div class="stat"><div class="n">+0.365</div><div class="l">Late-layer crossover</div></div>
+      <div class="stat"><div class="n">3.74×</div><div class="l">Attention spread</div></div>
+    </div>
+  </div>
+</div>
+<script>
+// preview one version in the browser: cover.html?video or cover.html?promo
+if (/^\?(video|promo)$/.test(location.search)) document.getElementById("c").classList.add(location.search.slice(1));
+const NS = "http://www.w3.org/2000/svg";
+const el = (p, n, a) => { const e = document.createElementNS(NS, n); for (const x in a) e.setAttribute(x, a[x]); p.append(e); return e; };
+const txt = (p, x, y, s, size, fill, weight = 500, anchor = "middle", extra = {}) => {
+  const t = el(p, "text", { x, y, "font-size": size, fill, "font-weight": weight, "text-anchor": anchor, ...extra }); t.textContent = s; return t; };
+const INK = "#15203b", MUTED = "#5d6576", TXT = "#ff7f0e", TXT_INK = "#c25f06", SPC = "#1f77b4", TEAL = "#21918c", RED = "#c0492f";
+let seed = 13; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+
+fetch("../assets/data/results.json").then((r) => r.json()).then((D) => {
+  const svg = document.getElementById("fig");
+  const g = el(svg, "g", {});
+
+  // ---------------------------------------------------------------- 1. the same question, two inputs
+  const card = (y, h, stroke, fill, title, col) => {
+    el(g, "rect", { x: 0, y, width: 330, height: h, rx: 16, fill, stroke, "stroke-width": 2.4 });
+    txt(g, 22, y + 36, title, 22, col, 600, "start");
+  };
+  card(10, 230, TXT, "#fff6ee", "Text", TXT_INK);
+  ["What is the capital", "of Australia?"].forEach((l, i) =>
+    txt(g, 22, 128 + i * 38, l, 28, INK, 500, "start"));
+  card(280, 230, SPC, "#f0f5fa", "Speech", SPC);
+  for (let i = 0; i < 40; i++) {
+    const x = 26 + i * 7, env = Math.sin(Math.PI * (i + .5) / 40) ** .7, h = 10 + env * (28 + 70 * rnd());
+    el(g, "line", { x1: x, x2: x, y1: 410 - h / 2, y2: 410 + h / 2, stroke: SPC, "stroke-width": 3.4, "stroke-linecap": "round" });
+  }
+  // answers
+  const ans = (y, s, ok) => {
+    const w = 40 + s.length * 10.5;
+    el(g, "rect", { x: 316 - w, y: y - 22, width: w, height: 36, rx: 18, fill: "#fff", stroke: ok ? TEAL : RED, "stroke-width": 2.2 });
+    txt(g, 316 - w / 2, y + 3, (ok ? "✓ " : "✗ ") + s, 18, ok ? TEAL : RED, 600);
+  };
+  ans(46, "Canberra", true); ans(316, "Sydney", false);
+
+  // ---------------------------------------------------------------- 2. two routes through the layers
+  const SX = 400, LH = 13.6, top = 46;
+  const ly = (l) => top + l * (LH + 2.2);
+  for (let l = 0; l <= 28; l++) {
+    el(g, "rect", { x: SX, y: ly(l), width: 58, height: LH, rx: 3, fill: "#fde6cf" });
+    el(g, "rect", { x: SX + 112, y: ly(l), width: 58, height: LH, rx: 3, fill: "#d6e6f3" });
+  }
+  txt(g, SX + 29, top - 14, "text", 18, TXT_INK, 600);
+  txt(g, SX + 141, top - 14, "speech", 18, SPC, 600);
+  // middle-layer alignment links
+  for (let l = 10; l <= 21; l++) el(g, "line", { x1: SX + 60, x2: SX + 110, y1: ly(l) + LH / 2, y2: ly(l) + LH / 2, stroke: TEAL, "stroke-width": 2.4 });
+  el(g, "rect", { x: SX - 6, y: ly(10) - 4, width: 182, height: ly(21) - ly(10) + LH + 8, rx: 8, fill: "none", stroke: TEAL, "stroke-width": 2, "stroke-dasharray": "5 5" });
+  // late layers: decisions diverge
+  for (let l = 23; l <= 28; l++) {
+    el(g, "rect", { x: SX, y: ly(l), width: 58, height: LH, rx: 3, fill: TXT, "fill-opacity": .75 });
+    el(g, "rect", { x: SX + 112, y: ly(l), width: 58, height: LH, rx: 3, fill: SPC, "fill-opacity": .75 });
+  }
+  // ---------------------------------------------------------------- 3. cross-layer CKA (paper Figure 3, Qwen2.5-Omni, BBH)
+  const key = "Qwen2.5-Omni · BBH", M = D.cka[key], n = M.length;
+  const HX = 650, HY = 18, HS = 470, c = HS / n;
+  const lut = D.viridis, col = (v) => lut[Math.max(0, Math.min(lut.length - 1, Math.round(v * (lut.length - 1))))];
+  for (let i = 0; i < n; i++) for (let j = 0; j < n; j++)
+    el(g, "rect", { x: HX + j * c, y: HY + i * c, width: c + .5, height: c + .5, fill: col(M[i][j]) });
+  let d = "";
+  D.bestmatch[key].forEach((cc, row) => { const x = HX + (cc + .5) * c, y = HY + (row + .5) * c; d += row ? `V${y}H${x}` : `M${x} ${y}`; });
+  el(g, "path", { d, fill: "none", stroke: "#fff", "stroke-width": 6, "stroke-opacity": .6 });
+  el(g, "path", { d, fill: "none", stroke: RED, "stroke-width": 3.2 });
+  el(g, "rect", { x: HX - 6, y: HY + 10 * c, width: HS + 12, height: 12 * c, fill: "none", stroke: TEAL, "stroke-width": 3 });
+  txt(g, HX + HS / 2, HY + HS + 30, "text layer", 19, MUTED, 500);
+  txt(g, HX - 16, HY + HS / 2, "speech layer", 19, MUTED, 500, "middle", { transform: `rotate(-90 ${HX - 16} ${HY + HS / 2})` });
+
+  // ---------------------------------------------------------------- 4. answer margins (paper Figure 1)
+  const F = D.fig1 || null;
+  const MX = 1190, MW = 510, MY = 24, MH = 210;
+  el(g, "rect", { x: MX, y: MY, width: MW, height: MH, rx: 14, fill: "#fff", stroke: "#d6dce5", "stroke-width": 2 });
+  const X = (l) => MX + 22 + l / 28 * (MW - 44), Y = (v) => MY + 30 + (0.15 - v) / 0.35 * (MH - 52);
+  el(g, "rect", { x: X(23), y: MY + 22, width: X(28) - X(23), height: MH - 38, fill: "#eef0f3" });
+  el(g, "line", { x1: X(0), x2: X(28), y1: Y(0), y2: Y(0), stroke: "#b9c1cd", "stroke-width": 1.5, "stroke-dasharray": "4 4" });
+  const curve = (vals, colr) => el(g, "polyline", { points: vals.map((v, i) => `${X(i)},${Y(v)}`).join(" "), fill: "none", stroke: colr, "stroke-width": 3.4, "stroke-linejoin": "round" });
+  const margins = D.margins["Text only correct (n = 233)"];
+  curve(margins.speech, SPC); curve(margins.text, TXT);
+  txt(g, MX + 22, MY + 22, "answer margin by layer", 18, MUTED, 600, "start");
+  txt(g, (X(23) + X(28)) / 2, MY + MH - 22, "late", 17, MUTED, 600);
+
+  // ---------------------------------------------------------------- 5. attention: concentrated vs dispersed (paper Figure 5)
+  const A = D.attention["Nutrition 177"];
+  const AX = 1190, AY = 270, AW = 510, AH = 236;
+  el(g, "rect", { x: AX, y: AY, width: AW, height: AH, rx: 14, fill: "#fff", stroke: "#d6dce5", "stroke-width": 2 });
+  txt(g, AX + 22, AY + 32, "attention at the decision point", 18, MUTED, 600, "start");
+  const b1 = AY + 116, b2 = AY + AH - 22, w = AW - 44;
+  el(g, "line", { x1: AX + 22, x2: AX + 22 + w, y1: b1, y2: b1, stroke: INK, "stroke-width": 1.4 });
+  el(g, "polygon", { points: [[AX + 22, b1], ...A.text.map(([f, v]) => [AX + 22 + f * w, b1 - v * 64]), [AX + 22 + w, b1]].map((p) => p.join(",")).join(" "), fill: TXT });
+  el(g, "line", { x1: AX + 22, x2: AX + 22 + w, y1: b2, y2: b2, stroke: INK, "stroke-width": 1.4 });
+  A.speech.forEach(([f, v]) => { if (v > .0015) el(g, "line", { x1: AX + 22 + f * w, x2: AX + 22 + f * w, y1: b2, y2: b2 - Math.min(v, .1) / .1 * 64, stroke: SPC, "stroke-width": 2 }); });
+  txt(g, AX + AW - 22, b1 - 8, "text", 17, TXT_INK, 600, "end");
+  txt(g, AX + AW - 22, b2 - 72, "speech (×10)", 17, SPC, 600, "end");
+
+  // arrows between components
+  const arr = (x1, y1, x2, y2) => {
+    el(g, "path", { d: `M${x1},${y1} L${x2},${y2}`, stroke: "#97a1b1", "stroke-width": 2.4 });
+    el(g, "path", { d: `M${x2 - 10},${y2 - 8} L${x2},${y2} L${x2 - 10},${y2 + 8}`, fill: "none", stroke: "#97a1b1", "stroke-width": 2.4, "stroke-linejoin": "round" });
+  };
+  arr(SX + 182, 250, HX - 40, 250);
+  arr(HX + HS + 14, 130, MX - 10, 130);
+  arr(HX + HS + 14, 380, AX - 10, 380);
+
+  document.title = "ready";
+});
+</script>
+</body>
+</html>

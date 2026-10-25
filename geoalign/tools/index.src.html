@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Geometric Alignment without Functional Equivalence: A Layer-wise Analysis of the Speech–Text Modality Gap</title>
+  <meta name="description" content="Speech LLMs answer the same question less accurately from speech than from text. Speech and text representations align in middle layers, yet late layers form the answer differently. NeurIPS 2026.">
+  <meta name="author" content="Ming-Hao Hsu, Xiaohai Tian, Jun Zhang, Lu Lu, Yuxuan Wang, Zhizheng Wu">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#ffffff">
+  <!-- Social preview. Set SITE_URL when building (see README) so these become absolute. -->
+  <link rel="canonical" href="{{SITE_URL}}">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Geometric Alignment without Functional Equivalence">
+  <meta property="og:description" content="A layer-wise analysis of the speech–text modality gap: representations align in middle layers, answers diverge in late layers. NeurIPS 2026.">
+  <meta property="og:image" content="{{SITE_URL}}assets/img/social-card.png">
+  <meta property="og:url" content="{{SITE_URL}}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="{{SITE_URL}}assets/img/social-card.png">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/source-serif-4-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/inter-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/katex/katex.min.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <script src="assets/site.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<nav class="topnav" aria-label="Sections">
+  <div class="topnav-inner">
+    <a class="topnav-name" href="#top">Geometry ≠ Function</a>
+    <div class="topnav-links">
+      <a href="#overview">Overview</a>
+      <a href="#gap">Gap</a>
+      <a href="#geometry">Geometry</a>
+      <a href="#function">Function</a>
+      <a href="#attention">Attention</a>
+      <a href="#models">Models</a>
+      <a href="#citation">BibTeX</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+<header class="masthead" id="top">
+  <p class="kicker">NeurIPS 2026</p>
+  <h1><span class="h1-name">Geometric Alignment without Functional Equivalence:</span> A Layer-wise Analysis of the Speech–Text Modality Gap</h1>
+
+  <p class="authors">
+    <span>Ming-Hao Hsu<sup>1</sup></span>
+    <span>Xiaohai Tian<sup>2</sup></span>
+    <span>Jun Zhang<sup>2</sup></span>
+    <span>Lu Lu<sup>2</sup></span>
+    <span>Yuxuan Wang<sup>2</sup></span>
+    <span>Zhizheng Wu<sup>1,3,4</sup></span>
+  </p>
+  <p class="affils">
+    <span><sup>1</sup>School of Data Science, The Chinese University of Hong Kong, Shenzhen</span>
+    <span><sup>2</sup>ByteDance</span>
+    <span><sup>3</sup>City University of Macau</span>
+    <span><sup>4</sup>Amphion Technology Co., Ltd.</span>
+  </p>
+
+  <div class="links">
+    <a class="btn" href="{{PAPER_URL}}" target="_blank" rel="noopener">{{ICON_PAPER}}<span>Paper</span></a>
+    <a class="btn" href="{{PDF_URL}}" target="_blank" rel="noopener">{{ICON_PDF}}<span>PDF</span></a>
+    <a class="btn" href="#video">{{ICON_PLAY}}<span>Video</span></a>
+    <a class="btn" id="link-code" hidden>{{ICON_CODE}}<span>Code</span></a>
+    <a class="btn" href="#citation">{{ICON_QUOTE}}<span>BibTeX</span></a>
+  </div>
+
+  {{LOGOS}}
+</header>
+
+
+<figure class="teaser wide" id="video">
+  <div class="video-wrap">
+    <video controls preload="metadata" playsinline poster="assets/video/poster.jpg">
+      <source src="assets/video/geoalign.mp4" type="video/mp4">
+      <track kind="metadata" src="assets/video/geoalign.en.vtt" srclang="en" label="English">
+      Your browser cannot play this video. <a href="assets/video/geoalign.mp4">Download the MP4</a>.
+    </video>
+    <div class="cc" aria-hidden="true"><span></span></div>
+    <button type="button" class="cc-toggle" aria-pressed="true" aria-label="Captions">CC</button>
+  </div>
+</figure>
+
+<section class="prose" id="overview">
+  <h2>Overview</h2>
+  <p class="tldr"><b>TL;DR</b> Inside a speech LLM, speech becomes geometrically close to text in the middle layers, yet the late layers still form the answer differently. Alignment is not the same as using the representation the same way.</p>
+  <p>End-to-end speech LLMs often answer a question less accurately when it is spoken than when it is written, even when the spoken content matches the text. A common way to study this modality gap is through representation geometry: measure how closely speech representations align with text, and push them closer.</p>
+  <p>Geometry gives the gap a measurable form, but it does not show whether the model <em>uses</em> aligned representations in the same way. We connect the two views. For the same questions given as text and as speech, we compare cross-layer Centered Kernel Alignment (CKA) with layer-wise answer margins in four open-weight speech LLMs on SpeechMMLU and VoiceBench BBH, and we edit attention inside the model at fixed input to test what drives late-layer answer separation.</p>
+  <ul class="findings">
+    <li><b>Geometry</b><span>In Qwen2.5-Omni and MiniCPM-o, speech and text align in a broad middle-layer band.</span></li>
+    <li><b>Function</b><span>Their late-layer answer margins still differ, so mid-layer alignment does not imply functional equivalence.</span></li>
+    <li><b>Mechanism</b><span>At fixed input and token count, sharpening late speech attention increases answer-code separation in all four tested conditions.</span></li>
+    <li><b>Two failure modes</b><span>Qwen2-Audio shows weak alignment instead, so the gap takes different forms across models and calls for different repairs.</span></li>
+  </ul>
+</section>
+
+<section class="highlights" id="highlights" aria-label="Key findings">
+  <dl class="hl-facts">
+    <div><dt>12.8</dt><dd><b>Points lost to speech</b>Qwen2.5-Omni on VoiceBench BBH, 72.7 → 59.9</dd></div>
+    <div><dt>10–21</dt><dd><b>Layers aligned</b>where speech–text CKA is high</dd></div>
+    <div><dt>+0.365</dt><dd><b>Late-layer crossover</b>answer margins in layers 23–28</dd></div>
+    <div><dt>3.74×</dt><dd><b>Attention spread</b>tokens needed to cover 90% of attention, speech vs text</dd></div>
+  </dl>
+  <figure class="hl-chart">
+    <div class="dual" role="img" aria-label="Speech–text CKA per layer and answer margins per layer for text and speech input">{{DUAL}}</div>
+    <figcaption><b>Figure 1.</b> The same question as text and as speech, Qwen2.5-Omni on BBH. <i>Top:</i> speech–text CKA is high in the middle layers, well above position-permuted pairs. <i>Bottom:</i> answer margins (correct minus best competing candidate) for the items answered correctly only from text separate in the late layers.</figcaption>
+  </figure>
+</section>
+
+<section id="gap">
+  <div class="prose">
+    <h2>The gap</h2>
+    <p>Both benchmarks are semantics-matched: the answer is determined by the linguistic content, not by speaker identity, emotion or prosody. Every model is less accurate from speech, by an amount that depends on the model and the task. In Qwen2.5-Omni the BBH gap comes mostly from Web-of-lies, a truth-chain task where accuracy falls from 89.6% to 52.0%.</p>
+  </div>
+  <figure class="wide figure">
+    <div class="gapchart" role="img" aria-label="Text and speech accuracy for four speech LLMs on SpeechMMLU and BBH">{{GAPCHART}}</div>
+    <figcaption><b>Figure 2.</b> Accuracy from text input (T2T) and from matched speech input (S2T) in the benchmark overview.</figcaption>
+  </figure>
+</section>
+
+<section id="geometry">
+  <div class="prose">
+    <h2>Geometry: speech and text align in the middle layers</h2>
+    <p>We extract hidden states for the same item as text and as speech, align speech frames to text tokens with dynamic time warping at one base layer, and compute linear CKA between every speech layer and every text layer. Three regimes appear along the speech layers. Early layers are not close to any text layer. In the middle layers similarity rises into a broad band, so several text layers match the same speech layer about equally well. On SpeechMMLU each speech layer aligns with roughly six text layers near its peak. We call this broad band <em>Semantic Smearing</em>. In late layers, consecutive speech layers often share the same best-matching text layer.</p>
+  </div>
+  <div class="hm wide" id="hm">
+    <div class="hm-controls">
+      <div class="ctl"><span class="ctl-l" id="hm-model-l">Model</span><div class="seg" role="radiogroup" aria-labelledby="hm-model-l" id="hm-model"></div></div>
+      <div class="ctl"><span class="ctl-l" id="hm-bench-l">Benchmark</span><div class="seg" role="radiogroup" aria-labelledby="hm-bench-l" id="hm-bench"></div></div>
+      <label class="hm-toggle"><input type="checkbox" id="hm-path" checked> Best-matching text layer</label>
+    </div>
+    <div class="hm-body">
+      <div class="hm-plot"><svg id="hm-svg" viewBox="0 0 560 560" role="img" aria-label="Cross-layer CKA heatmap"></svg></div>
+      <aside class="hm-side" aria-live="polite">
+        <p class="hm-mode" id="hm-mode"></p>
+        <p class="hm-desc" id="hm-desc"></p>
+        <div class="hm-acc" id="hm-acc"></div>
+        <div class="hm-read" id="hm-read">Hover over the map to read a cell.</div>
+        <div class="hm-scale"><svg id="hm-scale" viewBox="0 0 220 34"></svg></div>
+      </aside>
+    </div>
+  </div>
+  <p class="figure-note wide">Rows are speech layers and columns are text layers. Brighter cells mean higher CKA on a 0–1 scale. Values were read from the paper's vector figures (Figures 3, 17 and 21) and are accurate to about 0.005.</p>
+  <div class="prose">
+    <p>The middle-layer band is not an artefact of interpolation or pooling. Pairing each text token with a single native speech frame, the lift in CKA from early to middle layers and the band width both stay above their position-permutation baselines for both models on both benchmarks (paper Table 2a).</p>
+  </div>
+</section>
+
+<section id="function">
+  <div class="prose">
+    <h2>Function: answer margins diverge in the late layers</h2>
+    <p>At the decision position we read each layer through the model's final normalisation and vocabulary head and track the margin between the correct answer and its strongest competitor. Grouping the 1,000 BBH items by which route answers correctly, the route that is correct has the larger margin in the late window, layers 23–28, in both discordant groups.</p>
+  </div>
+  <figure class="wide figure">
+    <div class="margins" role="img" aria-label="Candidate probability margins per layer for four correctness groups">{{MARGINS}}</div>
+    <figcaption><b>Figure 3.</b> Mean correct-minus-competing candidate probability for Qwen2.5-Omni on 1,000 BBH items, grouped by free-generation correctness. Shading marks layers 23–28.</figcaption>
+  </figure>
+  <div class="prose">
+    <p>Averaged over layers 23–28, the text margin is larger by 0.135 for the items only text answers correctly, and the speech margin is larger by 0.230 for the items only speech answers correctly. The difference between the two, the <em>crossover contrast</em>, is +0.365, and it stays positive for full-vocabulary probabilities and signed logits. Because the groups are defined by outcomes, this locates where the routes differ. The attention edit below tests a cause.</p>
+  </div>
+</section>
+
+<section id="attention">
+  <div class="prose">
+    <h2>Late attention allocation causally affects answer separation</h2>
+    <p>Speech and text also differ in how attention is spread at the decision position. Across every head of Qwen2.5-Omni on 100 SpeechMMLU items, speech needs a median 2.20× as many tokens as text to cover 90% of the attention in layers 7–21, and 3.74× in layers 23–28.</p>
+  </div>
+  <div class="att wide" id="att">
+    <div class="att-controls seg" role="radiogroup" aria-label="Example" id="att-ex"></div>
+    <div class="att-grid">
+      <svg id="att-text" viewBox="0 0 340 150" role="img" aria-label="Text attention"></svg>
+      <svg id="att-speech" viewBox="0 0 340 150" role="img" aria-label="Speech attention"></svg>
+      <svg id="att-cum" viewBox="0 0 340 150" role="img" aria-label="Cumulative attention mass"></svg>
+    </div>
+  </div>
+  <p class="figure-note wide">Decision-position attention of one head for a single SpeechMMLU item (paper Figure 5). The speech panel uses a ten-times smaller vertical scale. Dashed lines mark the fraction of tokens that holds 90% of the mass.</p>
+  <div class="prose">
+    <p>Attention weights alone do not establish causal use, so we edit them. With the input and token count fixed, we sharpen decision-position speech attention in layers 23–28 while preserving each head's total mass on the speech span, and measure the change in the absolute gap between the two answer codes, <math-tex>\Delta|z_X-z_Y|</math-tex>. The answer-to-code mapping and the order of the rule instructions are counterbalanced.</p>
+  </div>
+  <figure class="wide figure mid">
+    <div class="forest" role="img" aria-label="Change in answer-code separation under four attention edits">{{FOREST}}</div>
+    <figcaption><b>Figure 4.</b> Mean change in |<i>z</i><sub>X</sub> − <i>z</i><sub>Y</sub>| on 1,000 BBH items for each edit and condition (paper Table 9). Late speech sharpening increases separation in all four conditions, and the reciprocal diffusion of text attention decreases it in all four. Middle-layer sharpening of the same strength does not show this pattern.</figcaption>
+  </figure>
+</section>
+
+<section id="models">
+  <div class="prose">
+    <h2>The gap takes two forms across models</h2>
+    <p>Qwen2.5-Omni and MiniCPM-o reach a clear middle-layer alignment band with text while their late answer margins depend on the route. We call this <b>Decision Instability</b>. Qwen2-Audio has weak cross-modal CKA through the middle of the network, with row maxima of at most 0.07 on SpeechMMLU and 0.13 on BBH in speech layers 10–21. We call this <b>Representation Failure</b>. LLaMA-Omni shows broad similarity with little layer-specific correspondence. The two patterns point to different targets: representation formation when alignment is weak, and late answer separation when alignment is present.</p>
+  </div>
+  <div class="wide table-wrap">
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Failure modes across models">
+      {{MODES}}
+    </div>
+    <p class="small">Gaps are text-minus-speech accuracy in points from the benchmark overview. LLaMA-Omni values are approximate. Mid-band describes the middle-layer CKA band.</p>
+  </div>
+
+  <div class="prose">
+    <h3>Compression repairs a subset of speech-only errors</h3>
+    <p>As a diagnostic, we compress the speech signal or its token sequence and count how many of the items that text answers correctly and speech answers incorrectly are repaired. Temporal compaction of the waveform and token merging inside the model each repair a subset of these errors, and their relative advantage depends on the evaluation protocol.</p>
+  </div>
+  <div class="wide table-wrap">
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Compression repairs">
+      {{COMPRESSION}}
+    </div>
+    <p class="small">Qwen2.5-Omni on BBH. Each entry counts corrected answers among the items that text answers correctly and speech answers incorrectly. The two protocols differ in generation length and instructions. Aggregate accuracy changes and newly introduced errors are reported in the paper (Table 4 and Appendix D).</p>
+  </div>
+</section>
+
+<section class="prose" id="citation">
+  <h2>BibTeX</h2>
+  <div class="bib">
+    <button type="button" id="copy-bib">Copy</button>
+    <pre id="bib-text">{{BIBTEX}}</pre>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    {{LOGOS_SMALL}}
+    <p>Hsu, Tian, Zhang, Lu, Wang, Wu · NeurIPS 2026 · <a href="{{PAPER_URL}}" target="_blank" rel="noopener">OpenReview</a></p>
+  </div>
+</footer>
+{{DATA}}
+</body>
+</html>

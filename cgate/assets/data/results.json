@@ -1,0 +1,521 @@
+{
+  "_source": "Is Text All You Need? Text as a Universal Information Bottleneck for Speech LLMs (NeurIPS 2026). Table numbers refer to the paper.",
+  "table1": {
+    "_note": "Table 1. WER (%) on LibriSpeech; accuracy (%) elsewhere. ESD/IEMOCAP/CREMA-D use the test recordings of the authors' split.",
+    "columns": [
+      "Clean",
+      "Other",
+      "ESD",
+      "IEMOCAP",
+      "CREMA-D",
+      "BBH",
+      "SpMMLU",
+      "MMAU"
+    ],
+    "rows": [
+      {
+        "train": [
+          true,
+          false,
+          false
+        ],
+        "values": [
+          3.81,
+          7.39,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ]
+      },
+      {
+        "train": [
+          false,
+          true,
+          false
+        ],
+        "values": [
+          null,
+          null,
+          95.4,
+          63.4,
+          75.0,
+          null,
+          null,
+          null
+        ]
+      },
+      {
+        "train": [
+          false,
+          false,
+          true
+        ],
+        "values": [
+          null,
+          null,
+          null,
+          null,
+          null,
+          28.6,
+          53.2,
+          44.0
+        ]
+      },
+      {
+        "train": [
+          true,
+          true,
+          false
+        ],
+        "values": [
+          4.36,
+          8.34,
+          95.7,
+          63.8,
+          75.5,
+          null,
+          null,
+          null
+        ]
+      },
+      {
+        "train": [
+          true,
+          true,
+          true
+        ],
+        "values": [
+          3.98,
+          8.42,
+          94.7,
+          64.6,
+          74.2,
+          43.5,
+          61.4,
+          48.3
+        ],
+        "ours": true
+      }
+    ]
+  },
+  "emotion_by_corpus": {
+    "_note": "Table 8. Accuracy (%) on the emotion test split.",
+    "rows": [
+      [
+        "ESD",
+        892,
+        95.4,
+        95.7,
+        94.7
+      ],
+      [
+        "IEMOCAP",
+        478,
+        63.4,
+        63.8,
+        64.6
+      ],
+      [
+        "CREMA-D",
+        388,
+        75.0,
+        75.5,
+        74.2
+      ],
+      [
+        "TESS",
+        132,
+        100.0,
+        98.5,
+        100.0
+      ],
+      [
+        "eNTERFACE",
+        56,
+        94.6,
+        98.2,
+        96.4
+      ],
+      [
+        "EMNS",
+        53,
+        86.8,
+        84.9,
+        100.0
+      ],
+      [
+        "JL-Corpus",
+        49,
+        95.9,
+        85.7,
+        93.9
+      ],
+      [
+        "SAVEE",
+        15,
+        60.0,
+        73.3,
+        80.0
+      ]
+    ],
+    "all": [
+      2063,
+      84.0,
+      84.1,
+      84.3
+    ]
+  },
+  "probes": {
+    "_note": "Table 15. Linear emotion probes, mean ± sd over ten speaker-disjoint partitions.",
+    "rows": [
+      [
+        "Mean-pooled Whisper states",
+        1280,
+        57.6,
+        5.7
+      ],
+      [
+        "Bag of selected token identities",
+        1000,
+        63.3,
+        5.2
+      ],
+      [
+        "Mean-pooled bridge output",
+        3584,
+        66.8,
+        3.9
+      ],
+      [
+        "PCA of pooled bridge output",
+        32,
+        67.8,
+        4.0
+      ]
+    ],
+    "majority": 23.7
+  },
+  "routing": {
+    "_note": "Table 3. Renormalised weights over the selected top-16 support.",
+    "rows": [
+      [
+        "Emotion-only",
+        "Emotion",
+        2.744,
+        0.99,
+        0.0282
+      ],
+      [
+        "ASR-only",
+        "ASR",
+        2.66,
+        0.96,
+        0.1122
+      ],
+      [
+        "Two-task",
+        "Emotion",
+        2.709,
+        0.977,
+        0.0633
+      ],
+      [
+        "Two-task",
+        "ASR",
+        2.73,
+        0.985,
+        0.0428
+      ],
+      [
+        "Three-task",
+        "Emotion",
+        2.688,
+        0.97,
+        0.0844
+      ],
+      [
+        "Three-task",
+        "ASR",
+        2.673,
+        0.964,
+        0.0997
+      ],
+      [
+        "Three-task",
+        "Reasoning",
+        2.677,
+        0.965,
+        0.0959
+      ]
+    ]
+  },
+  "attention_rank": {
+    "_note": "Figure 2. Effective rank of attention from the first five answer tokens to the audio frames, decoder layer 14.",
+    "models": [
+      "Emotion-only",
+      "ASR-only",
+      "Two-task",
+      "Three-task"
+    ],
+    "emotion": [
+      2.84,
+      3.41,
+      2.87,
+      2.71
+    ],
+    "asr": [
+      2.8,
+      4.47,
+      4.45,
+      4.43
+    ]
+  },
+  "interventions": {
+    "_note": "Appendix E, Tables 16-20. One C-Gate checkpoint, emotion test split (2,063 recordings) and the first 500 test-clean utterances. ci = paired 95% block-bootstrap interval of the difference, where reported. d_e/d_w = differences in points as reported in the paper (computed before rounding).",
+    "baseline": {
+      "emotion": 84.29,
+      "wer": 4.01
+    },
+    "majority": 23.7,
+    "audio": [
+      {
+        "id": "orig",
+        "label": "Original waveform",
+        "emotion": 84.29,
+        "wer": 4.01
+      },
+      {
+        "id": "zeros",
+        "label": "Zeros",
+        "emotion": 17.16,
+        "wer": 97.71
+      },
+      {
+        "id": "noise",
+        "label": "Gaussian noise",
+        "emotion": 20.02,
+        "wer": 98.84
+      }
+    ],
+    "bridge": [
+      {
+        "id": "unchanged",
+        "label": "Unchanged",
+        "emotion": 84.29,
+        "wer": 4.01
+      },
+      {
+        "id": "uniform",
+        "label": "Uniform weights",
+        "emotion": 81.63,
+        "wer": 5.85,
+        "ci_e": [
+          -4.88,
+          -1.36
+        ],
+        "ci_w": [
+          1.16,
+          2.46
+        ],
+        "d_e": -2.67,
+        "d_w": 1.84
+      },
+      {
+        "id": "vperm",
+        "label": "Value permutation",
+        "emotion": 11.78,
+        "wer": 434.18,
+        "ci_e": [
+          -78.76,
+          -63.63
+        ],
+        "ci_w": [
+          364.39,
+          498.07
+        ],
+        "d_e": -72.52,
+        "d_w": 430.17
+      },
+      {
+        "id": "gauss",
+        "label": "Gaussian values",
+        "emotion": 12.65,
+        "wer": 97.39,
+        "ci_e": [
+          -78.88,
+          -61.29
+        ],
+        "ci_w": [
+          92.74,
+          93.93
+        ],
+        "d_e": -71.64,
+        "d_w": 93.38
+      },
+      {
+        "id": "kperm",
+        "label": "Key permutation",
+        "emotion": 9.99,
+        "wer": 228.24,
+        "ci_e": [
+          -82.49,
+          -62.42
+        ],
+        "ci_w": [
+          177.51,
+          271.3
+        ],
+        "d_e": -74.31,
+        "d_w": 224.23
+      }
+    ],
+    "shuffle": {
+      "windows": [
+        "1",
+        "2",
+        "4",
+        "8",
+        "16",
+        "64",
+        "Full"
+      ],
+      "emotion": [
+        84.29,
+        78.4,
+        71.43,
+        63.31,
+        56.42,
+        52.25,
+        52.25
+      ],
+      "wer": [
+        4.01,
+        12.3,
+        50.91,
+        100.32,
+        142.11,
+        165.87,
+        187.52
+      ]
+    },
+    "k": {
+      "values": [
+        1,
+        4,
+        8,
+        16,
+        32,
+        64
+      ],
+      "emotion": [
+        55.89,
+        80.27,
+        84.54,
+        84.29,
+        82.65,
+        79.11
+      ],
+      "wer": [
+        337.1,
+        12.84,
+        5.18,
+        4.01,
+        3.89,
+        4.84
+      ],
+      "d_e": [
+        -28.41,
+        -4.02,
+        0.24,
+        0.0,
+        -1.65,
+        -5.19
+      ],
+      "d_w": [
+        333.09,
+        8.83,
+        1.17,
+        0.0,
+        -0.12,
+        0.83
+      ]
+    },
+    "stride": {
+      "values": [
+        2,
+        4,
+        8
+      ],
+      "frames": [
+        197.8,
+        99.1,
+        49.8
+      ],
+      "emotion": [
+        81.63,
+        84.29,
+        70.29
+      ],
+      "wer": [
+        14.07,
+        4.01,
+        36.5
+      ],
+      "d_e": [
+        -2.67,
+        0.0,
+        -14.01
+      ],
+      "d_w": [
+        10.06,
+        0.0,
+        32.49
+      ]
+    }
+  },
+  "params": {
+    "_note": "Table 4.",
+    "rows": [
+      [
+        "C-Gate scorer",
+        2492417,
+        "Trained"
+      ],
+      [
+        "Decoder attention projections, layers 0–23",
+        704753664,
+        "Trained"
+      ],
+      [
+        "Decoder MLPs and normalisation, layers 0–23",
+        4888633344,
+        "Frozen"
+      ],
+      [
+        "Decoder layers 24–27 and final normalisation",
+        932234752,
+        "Frozen"
+      ],
+      [
+        "Input embedding table",
+        544997376,
+        "Frozen"
+      ],
+      [
+        "Language-model head",
+        544997376,
+        "Frozen"
+      ],
+      [
+        "Whisper-large-v3 encoder",
+        636968960,
+        "Frozen"
+      ]
+    ],
+    "total": 8255077889,
+    "trained": 707246081
+  }
+}

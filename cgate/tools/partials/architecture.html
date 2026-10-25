@@ -1,0 +1,149 @@
+<svg class="architecture-figure model-desktop" viewBox="0 0 1080 360" role="img" aria-labelledby="arch-title">
+  <title id="arch-title">Speech is encoded by Whisper-large-v3, mean-pooled, and turned by C-Gate into a sparse convex mixture of rows of the frozen embedding table, which the partially adapted Qwen2.5-7B-Instruct decoder reads together with the text prompt.</title>
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 9 5 1 9" fill="none" stroke="#97a1b1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker>
+    <marker id="ahb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 9 5 1 9" fill="none" stroke="#4f74b8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker>
+  </defs>
+
+  <!-- speech -->
+  <g class="model-wave">
+    <path d="M14 141v18M22 132v36M30 124v52M38 136v28M46 117v66M54 128v44M62 139v22M70 121v58M78 133v34M86 143v14"/>
+  </g>
+  <text class="model-note" x="50" y="204" text-anchor="middle">Speech</text>
+  <path class="model-route" d="M96 150h22" marker-end="url(#ah)"/>
+
+  <!-- encoder + pooling -->
+  <rect class="model-node" x="122" y="112" width="128" height="76" rx="8"/>
+  <text class="model-label" x="186" y="146" text-anchor="middle">Whisper-large-v3</text>
+  <text class="model-note" x="186" y="166" text-anchor="middle">frozen</text>
+  <path class="model-route" d="M254 150h20" marker-end="url(#ah)"/>
+  <rect class="model-node" x="278" y="112" width="92" height="76" rx="8"/>
+  <text class="model-label" x="324" y="146" text-anchor="middle">Mean pool</text>
+  <text class="model-note" x="324" y="166" text-anchor="middle">stride 4</text>
+  <path class="model-route model-route-blue" d="M374 150h22" marker-end="url(#ahb)"/>
+
+  <!-- C-Gate -->
+  <rect x="400" y="30" width="366" height="236" rx="10" fill="#fbfcfe" stroke="#7f9ccf" stroke-width="1.2"/>
+  <text class="model-label" x="416" y="54" style="fill:#2456a6;font-weight:600">C-Gate</text>
+  <text class="model-note" x="470" y="54">trained scorer, 2.5M parameters</text>
+
+  <rect class="model-node model-node-blue" x="416" y="128" width="66" height="44" rx="7"/>
+  <foreignObject x="359" y="138" width="180" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="model-math" style="font-size:13.5px;text-align:center"><math-tex>q_t</math-tex></div></foreignObject>
+  <text class="model-note" x="449" y="190" text-anchor="middle">query</text>
+  <path class="model-route model-route-blue" d="M486 150h26" marker-end="url(#ahb)"/>
+
+  <rect x="516" y="80" width="26" height="160" rx="3" fill="#f3f5f8" stroke="#c9d0db" stroke-width="1"/>
+  <g stroke="#c3cad6" stroke-width="1">
+    <path d="M520 86h18M520 92h18M520 98h18M520 104h18M520 116h18M520 122h18M520 134h18M520 140h18M520 152h18M520 158h18M520 164h18M520 176h18M520 182h18M520 194h18M520 200h18M520 206h18M520 218h18M520 224h18M520 230h18M520 236h18"/>
+  </g>
+  <g stroke="#2456a6" stroke-width="2.2">
+    <path d="M520 110h18M520 128h18M520 146h18M520 170h18M520 188h18M520 212h18"/>
+  </g>
+  <text class="model-note" x="529" y="74" text-anchor="middle">all 152,064 rows</text>
+  <path class="model-route model-route-blue" d="M546 150h38" marker-end="url(#ahb)"/>
+  <text class="model-note" x="565" y="141" text-anchor="middle">top 16</text>
+
+  <g fill="#2456a6">
+    <rect x="590" y="98" width="46" height="4.6" rx="1"/><rect x="590" y="104.6" width="44" height="4.6" rx="1"/>
+    <rect x="590" y="111.2" width="45" height="4.6" rx="1"/><rect x="590" y="117.8" width="43" height="4.6" rx="1"/>
+    <rect x="590" y="124.4" width="44" height="4.6" rx="1"/><rect x="590" y="131" width="42" height="4.6" rx="1"/>
+    <rect x="590" y="137.6" width="43" height="4.6" rx="1"/><rect x="590" y="144.2" width="41" height="4.6" rx="1"/>
+    <rect x="590" y="150.8" width="42" height="4.6" rx="1"/><rect x="590" y="157.4" width="41" height="4.6" rx="1"/>
+    <rect x="590" y="164" width="40" height="4.6" rx="1"/><rect x="590" y="170.6" width="41" height="4.6" rx="1"/>
+    <rect x="590" y="177.2" width="40" height="4.6" rx="1"/><rect x="590" y="183.8" width="39" height="4.6" rx="1"/>
+    <rect x="590" y="190.4" width="40" height="4.6" rx="1"/><rect x="590" y="197" width="39" height="4.6" rx="1"/>
+  </g>
+  <foreignObject x="523" y="71" width="180" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="model-math" style="font-size:11.5px;text-align:center">weights <math-tex>\alpha</math-tex></div></foreignObject>
+  <foreignObject x="523" y="201" width="180" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="model-math" style="font-size:11.5px;text-align:center"><math-tex>\alpha \geq 0,\; \sum\alpha = 1</math-tex></div></foreignObject>
+  <path class="model-route model-route-blue" d="M642 150h40" marker-end="url(#ahb)"/>
+  <circle cx="702" cy="150" r="11" fill="#15203b" stroke="#fff" stroke-width="2.5"/>
+  <foreignObject x="612" y="109" width="180" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="model-math" style="font-size:13.5px;text-align:center"><math-tex>\tilde{e}_t</math-tex></div></foreignObject>
+  <foreignObject x="612" y="165" width="180" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="model-math" style="font-size:11.5px;text-align:center">inside <math-tex>\operatorname{conv}(E)</math-tex></div></foreignObject>
+
+  <!-- frozen table E -->
+  <rect x="500" y="292" width="210" height="46" rx="4" fill="#f6f7f9" stroke="#c9d0db" stroke-width="1"/>
+  <g stroke="#d6dbe3" stroke-width="1"><path d="M500 300.5h210M500 308h210M500 315.5h210M500 323h210M500 330.5h210"/></g>
+  <foreignObject x="190" y="295" width="300" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="model-math" style="font-size:13.5px;text-align:right">Frozen embedding table <math-tex>E</math-tex></div></foreignObject>
+  <text class="model-note" x="490" y="329" text-anchor="end">never updated</text>
+  <path class="model-route model-route-blue" d="M529 290V244" marker-end="url(#ahb)"/>
+  <foreignObject x="537" y="265" width="180" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="model-math" style="font-size:11.5px;text-align:left">keys <math-tex>W_kE</math-tex></div></foreignObject>
+  <path class="model-route model-route-blue" d="M620 290V240" marker-end="url(#ahb)"/>
+  <foreignObject x="628" y="269" width="180" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="model-math" style="font-size:11.5px;text-align:left">values: raw rows of <math-tex>E</math-tex></div></foreignObject>
+
+  <!-- decoder -->
+  <foreignObject x="718" y="27" width="300" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="model-math" style="font-size:11.5px;text-align:center">text prompt, same table <math-tex>E</math-tex></div></foreignObject>
+  <g>
+    <rect class="model-token" x="822" y="54" width="14" height="14" rx="2"/><rect class="model-token" x="840" y="54" width="14" height="14" rx="2"/>
+    <rect class="model-token" x="858" y="54" width="14" height="14" rx="2"/><rect class="model-token" x="876" y="54" width="14" height="14" rx="2"/>
+    <rect class="model-token" x="894" y="54" width="14" height="14" rx="2"/>
+  </g>
+  <path class="model-route" d="M866 72v20" marker-end="url(#ah)"/>
+  <path class="model-route model-route-blue" d="M716 150h74" marker-end="url(#ahb)"/>
+  <rect class="model-stack" x="804" y="104" width="148" height="104" rx="8"/>
+  <rect class="model-node" x="796" y="96" width="148" height="104" rx="8"/>
+  <text class="model-label" x="870" y="153" text-anchor="middle">Qwen2.5-7B-Instruct</text>
+  <path class="model-route" d="M956 150h20" marker-end="url(#ah)"/>
+
+  <!-- outputs -->
+  <g>
+    <rect class="model-token" x="982" y="111" width="10" height="10" rx="2"/>
+    <text class="model-label" x="998" y="120">Transcript</text>
+    <rect class="model-token model-token-blue" x="982" y="145" width="10" height="10" rx="2"/>
+    <text class="model-label" x="998" y="154">Emotion</text>
+    <rect class="model-token" x="982" y="179" width="10" height="10" rx="2"/>
+    <text class="model-label" x="998" y="188">Answer</text>
+  </g>
+</svg>
+
+<svg class="architecture-figure model-mobile" viewBox="0 0 420 700" role="img" aria-labelledby="arch-title-m">
+  <title id="arch-title-m">C-Gate pipeline, vertical layout.</title>
+  <defs>
+    <marker id="ahm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 9 5 1 9" fill="none" stroke="#97a1b1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker>
+    <marker id="ahbm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 9 5 1 9" fill="none" stroke="#4f74b8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></marker>
+  </defs>
+  <g class="model-wave"><path d="M170 26v18M178 17v36M186 9v52M194 21v28M202 4v62M210 13v44M218 24v22M226 6v58M234 18v34M242 28v14"/></g>
+  <path class="model-route" d="M210 76v18" marker-end="url(#ahm)"/>
+  <rect class="model-node" x="110" y="98" width="200" height="54" rx="8"/>
+  <text class="model-label" x="210" y="122" text-anchor="middle">Whisper-large-v3</text>
+  <text class="model-note" x="210" y="140" text-anchor="middle">frozen</text>
+  <path class="model-route" d="M210 156v16" marker-end="url(#ahm)"/>
+  <rect class="model-node" x="140" y="176" width="140" height="46" rx="8"/>
+  <text class="model-label" x="210" y="198" text-anchor="middle">Mean pool</text>
+  <text class="model-note" x="210" y="214" text-anchor="middle">stride 4</text>
+  <path class="model-route model-route-blue" d="M210 226v16" marker-end="url(#ahbm)"/>
+
+  <rect x="24" y="246" width="372" height="214" rx="10" fill="#fbfcfe" stroke="#7f9ccf" stroke-width="1.2"/>
+  <text class="model-label" x="40" y="270" style="fill:#2456a6;font-weight:600">C-Gate</text>
+  <text class="model-note" x="94" y="270">trained scorer, 2.5M parameters</text>
+  <rect class="model-node model-node-blue" x="44" y="320" width="64" height="44" rx="7"/>
+  <foreignObject x="-14" y="330" width="180" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="model-math" style="font-size:13.5px;text-align:center"><math-tex>q_t</math-tex></div></foreignObject>
+  <path class="model-route model-route-blue" d="M112 342h24" marker-end="url(#ahbm)"/>
+  <rect x="140" y="292" width="24" height="120" rx="3" fill="#f3f5f8" stroke="#c9d0db" stroke-width="1"/>
+  <g stroke="#c3cad6"><path d="M144 298h16M144 304h16M144 316h16M144 322h16M144 334h16M144 346h16M144 352h16M144 364h16M144 376h16M144 382h16M144 394h16M144 406h16"/></g>
+  <g stroke="#2456a6" stroke-width="2.2"><path d="M144 310h16M144 328h16M144 340h16M144 358h16M144 370h16M144 388h16M144 400h16"/></g>
+  <text class="model-note" x="152" y="428" text-anchor="middle">all rows</text>
+  <path class="model-route model-route-blue" d="M168 342h24" marker-end="url(#ahbm)"/>
+  <text class="model-note" x="180" y="332" text-anchor="middle">top 16</text>
+  <g fill="#2456a6">
+    <rect x="198" y="296" width="44" height="4.4" rx="1"/><rect x="198" y="302.4" width="42" height="4.4" rx="1"/><rect x="198" y="308.8" width="43" height="4.4" rx="1"/><rect x="198" y="315.2" width="41" height="4.4" rx="1"/>
+    <rect x="198" y="321.6" width="42" height="4.4" rx="1"/><rect x="198" y="328" width="40" height="4.4" rx="1"/><rect x="198" y="334.4" width="41" height="4.4" rx="1"/><rect x="198" y="340.8" width="40" height="4.4" rx="1"/>
+    <rect x="198" y="347.2" width="40" height="4.4" rx="1"/><rect x="198" y="353.6" width="39" height="4.4" rx="1"/><rect x="198" y="360" width="40" height="4.4" rx="1"/><rect x="198" y="366.4" width="38" height="4.4" rx="1"/>
+    <rect x="198" y="372.8" width="39" height="4.4" rx="1"/><rect x="198" y="379.2" width="38" height="4.4" rx="1"/><rect x="198" y="385.6" width="38" height="4.4" rx="1"/><rect x="198" y="392" width="37" height="4.4" rx="1"/>
+  </g>
+  <foreignObject x="130" y="397" width="180" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="model-math" style="font-size:11.5px;text-align:center"><math-tex>\alpha \geq 0,\; \sum\alpha = 1</math-tex></div></foreignObject>
+  <path class="model-route model-route-blue" d="M250 342h66" marker-end="url(#ahbm)"/>
+  <circle cx="338" cy="342" r="10" fill="#15203b" stroke="#fff" stroke-width="2.5"/>
+  <foreignObject x="248" y="303" width="180" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="model-math" style="font-size:13.5px;text-align:center"><math-tex>\tilde{e}_t</math-tex></div></foreignObject>
+  <foreignObject x="248" y="355" width="180" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="model-math" style="font-size:11.5px;text-align:center">in <math-tex>\operatorname{conv}(E)</math-tex></div></foreignObject>
+  <rect x="96" y="482" width="190" height="40" rx="4" fill="#f6f7f9" stroke="#c9d0db"/>
+  <g stroke="#d6dbe3"><path d="M96 490h190M96 498h190M96 506h190M96 514h190"/></g>
+  <foreignObject x="41" y="523" width="300" height="32"><div xmlns="http://www.w3.org/1999/xhtml" class="model-math" style="font-size:11.5px;text-align:center">Frozen embedding table <math-tex>E</math-tex> (keys and values)</div></foreignObject>
+  <path class="model-route model-route-blue" d="M152 480v-46" marker-end="url(#ahbm)"/>
+  <path class="model-route model-route-blue" d="M222 480V438" marker-end="url(#ahbm)"/>
+  <path class="model-route model-route-blue" d="M338 464v100" marker-end="url(#ahbm)"/>
+  <rect class="model-stack" x="186" y="574" width="220" height="70" rx="8"/>
+  <rect class="model-node" x="178" y="566" width="220" height="70" rx="8"/>
+  <text class="model-label" x="288" y="606" text-anchor="middle">Qwen2.5-7B-Instruct</text>
+  <text class="model-note" x="288" y="672" text-anchor="middle">Transcript · Emotion · Answer</text>
+  <path class="model-route" d="M288 640v16" marker-end="url(#ahm)"/>
+</svg>

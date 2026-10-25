@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Is Text All You Need? Text as a Universal Information Bottleneck for Speech LLMs</title>
+  <meta name="description" content="C-Gate connects a speech encoder to a language model by representing each speech frame as a sparse convex mixture of the model's frozen text embeddings. One fixed text vocabulary supports both transcription and emotion recognition.">
+  <meta name="author" content="Ming-Hao Hsu, Yuxuan Hu, Shujie Liu, Jinyu Li, Zhizheng Wu">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#ffffff">
+  <!-- Social preview. Set SITE_URL when building (see README) so these become absolute. -->
+  <link rel="canonical" href="{{SITE_URL}}">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Is Text All You Need? Text as a Universal Information Bottleneck for Speech LLMs">
+  <meta property="og:description" content="C-Gate feeds speech to an LLM as convex mixtures of its frozen text embeddings. 3.98% WER on LibriSpeech test-clean and 84.3% emotion accuracy from one decoder. NeurIPS 2026.">
+  <meta property="og:image" content="{{SITE_URL}}assets/img/social-card.png">
+  <meta property="og:url" content="{{SITE_URL}}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="{{SITE_URL}}assets/img/social-card.png">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/source-serif-4-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/inter-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/katex/katex.min.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <script src="assets/site.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<nav class="topnav" aria-label="Sections">
+  <div class="topnav-inner">
+    <a class="topnav-name" href="#top">C-Gate</a>
+    <div class="topnav-links">
+      <a href="#overview">Overview</a>
+      <a href="#method">Method</a>
+      <a href="#analysis">Analysis</a>
+      <a href="#interventions">Interventions</a>
+      <a href="#results">Results</a>
+      <a href="#citation">BibTeX</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+<header class="masthead" id="top">
+  <p class="kicker">NeurIPS 2026</p>
+  <h1><span class="h1-name">Is Text All You Need?</span> Text as a Universal Information Bottleneck for Speech LLMs</h1>
+
+  <p class="authors">
+    <span>Ming-Hao Hsu<sup>1</sup></span>
+    <span>Yuxuan Hu<sup>2</sup></span>
+    <span>Shujie Liu<sup>3</sup></span>
+    <span>Jinyu Li<sup>2</sup></span>
+    <span>Zhizheng Wu<sup>1</sup></span>
+  </p>
+  <p class="affils">
+    <span><sup>1</sup>School of Data Science, The Chinese University of Hong Kong, Shenzhen</span>
+    <span><sup>2</sup>Microsoft Research, Redmond</span>
+    <span><sup>3</sup>Microsoft Research Asia, Hong Kong</span>
+  </p>
+
+  <div class="links">
+    <a class="btn" href="{{PAPER_URL}}" target="_blank" rel="noopener">{{ICON_PAPER}}<span>Paper</span></a>
+    <a class="btn" href="{{PDF_URL}}" target="_blank" rel="noopener">{{ICON_PDF}}<span>PDF</span></a>
+    <a class="btn" href="#video">{{ICON_PLAY}}<span>Video</span></a>
+    <a class="btn" id="link-code" hidden>{{ICON_CODE}}<span>Code</span></a>
+    <a class="btn" id="link-model" hidden>{{ICON_BOX}}<span>Weights</span></a>
+    <a class="btn" href="#citation">{{ICON_QUOTE}}<span>BibTeX</span></a>
+  </div>
+
+  {{LOGOS}}
+</header>
+
+
+<figure class="teaser wide" id="video">
+  <div class="video-wrap">
+    <video controls preload="metadata" playsinline poster="assets/video/poster.jpg">
+      <source src="assets/video/cgate.mp4" type="video/mp4">
+      <track kind="metadata" src="assets/video/cgate.en.vtt" srclang="en" label="English">
+      Your browser cannot play this video. <a href="assets/video/cgate.mp4">Download the MP4</a>.
+    </video>
+    <div class="cc" aria-hidden="true"><span></span></div>
+    <button type="button" class="cc-toggle" aria-pressed="true" aria-label="Captions">CC</button>
+  </div>
+</figure>
+
+<section class="prose" id="overview">
+  <h2>Overview</h2>
+  <p class="tldr"><b>TL;DR</b> C-Gate feeds speech to a language model as sparse convex mixtures of the model's own frozen text embeddings. The same fixed vocabulary carries both what was said and how it was said.</p>
+  <p>A speech LLM needs a bridge from a speech encoder into the language model's input space. Some bridges are tied to the vocabulary through objectives such as CTC or text alignment, which emphasise semantic content, while emotion also depends on prosody. Others produce free continuous vectors, so where those vectors settle relative to the text embeddings is an outcome of training rather than a property of the design.</p>
+  <p>C-Gate separates the two choices. For every pooled speech frame it scores the full vocabulary, keeps 16 rows of the frozen embedding table, and mixes them with non-negative weights that sum to one. No projection follows the table, so every bridge output lies inside the convex hull of the text embeddings. The task losses alone decide which rows are selected and how they are weighted. No transcript-token target guides the selection.</p>
+  <p>With a Whisper-large-v3 encoder and a Qwen2.5-7B-Instruct decoder, one checkpoint trained jointly on speech recognition, emotion recognition and spoken reasoning reaches <b>3.98%</b> and <b>8.42%</b> WER on LibriSpeech test-clean and test-other and <b>84.3%</b> emotion accuracy on test recordings from eight corpora, with one decoder and no emotion classifier. Because every output lives in shared embedding coordinates, the selected tokens, their weights and the decoder's attention can be inspected and intervened on directly.</p>
+</section>
+
+<section class="highlights" id="highlights" aria-label="Key results">
+  <dl class="hl-facts">
+    <div><dt>3.98%</dt><dd><b>Word error rate</b>on LibriSpeech test-clean</dd></div>
+    <div><dt>84.3%</dt><dd><b>Emotion accuracy</b>2,063 test recordings from eight corpora</dd></div>
+    <div><dt>16</dt><dd><b>Embeddings per frame</b>frozen text embeddings, mixed with weights that sum to one</dd></div>
+    <div><dt>8.6%</dt><dd><b>Parameters trained</b>scorer and decoder attention, with the embedding table frozen</dd></div>
+  </dl>
+  <figure class="hl-chart">
+    <div class="probechart" role="img" aria-label="Linear emotion probe accuracy for four representations">{{PROBECHART}}</div>
+    <figcaption><b>Figure 1.</b> Linear emotion probes on the test split, mean ± s.d. over ten speaker-disjoint partitions. Counting <em>which</em> embedding rows C-Gate selects, without weights or order, already beats the pooled Whisper states. <a href="#analysis">Analysis</a></figcaption>
+  </figure>
+</section>
+
+<section id="method">
+  <div class="prose"><h2>Method</h2></div>
+
+  <figure class="wide figure arch">
+    {{PARTIAL_ARCH}}
+    <figcaption><b>Figure 2.</b> Whisper-large-v3 features are mean-pooled with stride 4. C-Gate scores all rows of the decoder's embedding table <i>E</i>, keeps the top 16, and passes their renormalised mixture to Qwen2.5-7B-Instruct. Keys are a learned projection of <i>E</i>, and the values are the raw rows. The text prompt is looked up in the same table.</figcaption>
+  </figure>
+
+  <div class="prose">
+    <h3>Convex Gate</h3>
+    <p>Let <math-tex>\mathbf{E}\in\mathbb{R}^{V\times d_{\mathrm{llm}}}</math-tex> be the frozen embedding table. Every bridge output is restricted to its convex hull,</p>
+    <math-tex display>\operatorname{conv}(\mathbf{E})=\Big\{\textstyle\sum_{v=1}^{V}a_v\mathbf{E}_v \;:\; a_v\ge 0,\ \sum_{v=1}^{V}a_v=1\Big\}.</math-tex>
+    <p>From a pooled encoder state <math-tex>\tilde{\mathbf{h}}_t</math-tex>, C-Gate forms a query and scores every row of the table against a learned key projection, then keeps the largest <math-tex>k=16</math-tex> entries:</p>
+    <math-tex display>\mathbf{q}_t=\mathrm{LN}\big(f_q(\tilde{\mathbf{h}}_t)\big),\quad \mathbf{K}=f_k(\mathbf{E}),\quad \boldsymbol{\pi}_t=\mathrm{softmax}\Big(\frac{\mathbf{q}_t\mathbf{K}^{\top}}{\sqrt{d_p}\,\tau}\Big),\quad S_t=\mathrm{TopK}_{k}(\boldsymbol{\pi}_t)</math-tex>
+    <p>The selected probabilities are renormalised and used to mix the <em>original</em> rows of the table:</p>
+    <math-tex display>\alpha_{t,v}=\frac{\pi_{t,v}}{\sum_{u\in S_t}\pi_{t,u}}\ \ (v\in S_t),\qquad \tilde{\mathbf{e}}_t=\sum_{v\in S_t}\alpha_{t,v}\,\mathbf{E}_v\in\operatorname{conv}(\mathbf{E}).</math-tex>
+    <p>The key projection enters only the scores, so it changes which rows are selected and never the vectors passed on. There is no value projection and no MLP after the mixture. With 152,064 rows and a scoring dimension <math-tex>d_p=512</math-tex>, the scorer has 2.5M parameters. The encoder output is mean-pooled with stride 4 before scoring.</p>
+  </div>
+</section>
+
+<section id="analysis">
+  <div class="prose">
+    <h2>What the bridge carries</h2>
+    <p>Because the bridge lives in the decoder's own embedding coordinates, each part of it can be inspected separately: the mixture weights, the identities of the selected rows, and how the decoder attends to the sequence.</p>
+
+    <h3>The weights are almost uniform</h3>
+    <p>Within each 16-row support, the renormalised weights are close to uniform for every model and every input task: normalised entropy is 0.960 to 0.990, and C-Gate's bridge vectors have a mean cosine similarity of 0.94 to 0.95 with the plain average of their 16 rows. Replacing the weights with exactly 1/16 changes emotion accuracy from 84.29% to 81.63% and WER from 4.01% to 5.85%. The weights matter a little, but most of the information is elsewhere.</p>
+  </div>
+
+  <figure class="wide figure mid">
+    <div class="weightstrip" role="img" aria-label="Normalised entropy of the mixture weights per model and input task">{{ROUTING_CHART}}</div>
+    <figcaption><b>Figure 3.</b> Normalised entropy of the 16 mixture weights, <i>H</i>/log 16, averaged over frames (Table 3). A value of 1 means perfectly uniform weights.</figcaption>
+  </figure>
+
+  <div class="prose">
+    <h3>The selected tokens carry emotion, but do not name it</h3>
+    <p>A logistic-regression probe that sees only how often each of the 1,000 most frequent rows appears in a recording's supports, with no weights and no order, reaches 63.3% emotion accuracy against 57.6% for mean-pooled Whisper states, and beats the Whisper probe in all ten speaker-disjoint partitions (Figure 1).</p>
+    <p>The code is not lexical. On the 84,663 frames of the emotion test split, C-Gate selects 19,997 distinct rows, and 43 of them account for half of all selections. The most frequent are word pieces unrelated to the input, which occur in nearly every recording. A row that spells an emotion label appears in the support of 70 frames, 0.08% of the total.</p>
+    <div class="tokens" aria-label="Examples of frequently selected rows">
+      <code>CSS</code><code>foundation</code><code>repeat</code><code>.day</code><span>and Chinese word pieces</span>
+    </div>
+
+    <h3>The decoder reads it differently per task</h3>
+    <p>For each example, the attention from the first five answer tokens to the audio frames at decoder layer 14 is summarised by its effective rank, which is at most five. When transcribing, the models trained on speech recognition reach 4.43 to 4.47: each answer token looks at different frames. For the emotion answer, the joint models stay at 2.71 to 2.87: the answer tokens share one attention pattern over the clip.</p>
+  </div>
+
+  <figure class="wide figure mid">
+    <div class="rankchart" role="img" aria-label="Attention effective rank under emotion and ASR inputs for four models">{{RANK_CHART}}</div>
+    <figcaption><b>Figure 4.</b> Effective rank of decoder attention to the audio frames at layer 14 (paper Figure 2). Dashed line: the maximum of five.</figcaption>
+  </figure>
+</section>
+
+<section id="interventions">
+  <div class="prose">
+    <h2>Intervene on a trained checkpoint</h2>
+    <p>Each control below changes one part of the bridge at inference, with all weights, prompts and decoding fixed, and shows what the paper measured on the emotion test split (2,063 recordings) and the first 500 LibriSpeech test-clean utterances.</p>
+  </div>
+  <div class="iv wide" id="iv">
+    <div class="iv-controls" role="tablist" aria-label="Intervention">
+      <button type="button" role="tab" data-fam="weights" aria-selected="true">Weights</button>
+      <button type="button" role="tab" data-fam="mapping">Key–value mapping</button>
+      <button type="button" role="tab" data-fam="order">Frame order</button>
+      <button type="button" role="tab" data-fam="k">Support size</button>
+      <button type="button" role="tab" data-fam="stride">Pooling stride</button>
+      <button type="button" role="tab" data-fam="audio">Audio input</button>
+    </div>
+    <div class="iv-body">
+      <div class="iv-stage">
+        <div class="iv-options" id="iv-options"></div>
+        <svg id="iv-svg" viewBox="0 0 640 284" role="img" aria-label="Schematic of the bridge sequence under the selected intervention"></svg>
+        <p class="iv-explain" id="iv-explain" aria-live="polite"></p>
+      </div>
+      <aside class="iv-meters" aria-live="polite">
+        <div class="meter" id="m-emo">
+          <div class="meter-head"><span>Emotion accuracy</span><b></b></div>
+          <svg viewBox="0 0 220 36" preserveAspectRatio="none"></svg>
+          <div class="meter-foot"></div>
+        </div>
+        <div class="meter" id="m-wer">
+          <div class="meter-head"><span>WER, test-clean</span><b></b></div>
+          <svg viewBox="0 0 220 36" preserveAspectRatio="none"></svg>
+          <div class="meter-foot"></div>
+        </div>
+        <p class="small iv-src" id="iv-src"></p>
+      </aside>
+    </div>
+  </div>
+  <p class="figure-note wide">The schematic shows a few frames with their supports. Colours stand for embedding rows and bar length for weight. Numbers are from Appendix E of the paper.</p>
+  {{IV_DATA}}
+</section>
+
+<section id="results">
+  <div class="prose">
+    <h2>Results</h2>
+    <p>Each row is one training configuration with the same bridge, adaptation scope and learning rates. The last row is C-Gate, trained jointly on all three tasks. Word error rate is in percent (lower is better), and the other columns are accuracy in percent.</p>
+  </div>
+  <div class="wide table-wrap">
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Overall task performance">
+      {{TABLE1}}
+    </div>
+    <p class="small">ESD, IEMOCAP and CREMA-D use the test recordings of the authors' train/test split of each corpus. In the reasoning benchmarks the text prompt contains the written question and the audio carries the spoken question or, for MMAU, the audio clip. Decoding is greedy throughout.</p>
+  </div>
+
+  <div class="wide table-wrap">
+    <div class="table-head"><h3>Emotion accuracy by corpus</h3></div>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Emotion accuracy by corpus">
+      {{TABLE_EMO}}
+    </div>
+    <p class="small">The three models trained with emotion data agree within two points on every corpus with more than 100 test recordings. Eight classes: angry, happy, sad, neutral, fearful, disgusted, surprised, calm.</p>
+  </div>
+</section>
+
+<section class="prose" id="citation">
+  <h2>BibTeX</h2>
+  <div class="bib">
+    <button type="button" id="copy-bib">Copy</button>
+    <pre id="bib-text">{{BIBTEX}}</pre>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    {{LOGOS_SMALL}}
+    <p>Hsu, Hu, Liu, Li, Wu · NeurIPS 2026 · <a href="{{PAPER_URL}}" target="_blank" rel="noopener">OpenReview</a></p>
+  </div>
+</footer>
+</body>
+</html>

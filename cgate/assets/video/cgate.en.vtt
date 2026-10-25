@@ -1,0 +1,54 @@
+WEBVTT
+
+00:00:00.700 --> 00:00:06.481
+Is Text All You Need? Text as a universal
+information bottleneck for speech LLMs.
+
+00:00:08.081 --> 00:00:13.009
+A speech LLM needs a bridge from the
+speech encoder into the language model.
+
+00:00:13.309 --> 00:00:17.683
+Learned adapters can place speech
+anywhere, even where no text token lives.
+
+00:00:17.983 --> 00:00:23.167
+Transcript objectives keep what was said,
+but emotion also depends on how it was said.
+
+00:00:23.467 --> 00:00:26.112
+Can the model's own text embeddings carry both?
+
+00:00:27.512 --> 00:00:29.372
+For every speech frame,
+
+00:00:29.372 --> 00:00:36.003
+C-Gate scores all 152,064 rows of the
+frozen embedding table and keeps the top 16.
+
+00:00:36.303 --> 00:00:41.017
+It mixes those original rows with weights
+that are non-negative and sum to one.
+
+00:00:41.317 --> 00:00:45.072
+So the bridge never leaves the
+convex hull of text embeddings.
+
+00:00:46.572 --> 00:00:55.319
+Whisper encodes, Qwen2.5-7B-Instruct decodes, and
+only 8.6 percent of the parameters are trained.
+
+00:01:00.052 --> 00:01:05.577
+The same decoder transcribes and recognises
+emotion. Only the instruction changes.
+
+00:01:07.077 --> 00:01:13.648
+With our training, C-Gate reaches a 3.98 percent
+word error rate on LibriSpeech test-clean,
+
+00:01:13.948 --> 00:01:16.977
+and 84.3 percent emotion accuracy.
+
+00:01:18.877 --> 00:01:23.485
+One frozen text vocabulary carries
+both what was said and how it was said.

@@ -1,0 +1,92 @@
+WEBVTT
+
+00:00:00.700 --> 00:00:04.119
+Geometric Alignment without
+Functional Equivalence:
+
+00:00:04.119 --> 00:00:07.740
+a layer-wise analysis of the
+speech-text modality gap.
+
+00:00:09.340 --> 00:00:14.353
+Ask a speech language model the same
+question, once as text and once as speech.
+
+00:00:20.653 --> 00:00:24.109
+From text, it answers correctly.
+From speech, it does not.
+
+00:00:24.409 --> 00:00:31.852
+Across four models and two benchmarks,
+speech is less accurate. On BBH,
+
+00:00:31.852 --> 00:00:36.569
+Qwen2.5-Omni drops from 72.7 to 59.9 percent.
+
+00:00:37.969 --> 00:00:41.087
+A common view studies this gap through geometry:
+
+00:00:41.087 --> 00:00:45.308
+how close do speech representations
+get to text inside the model?
+
+00:00:45.608 --> 00:00:48.803
+Comparing every speech
+layer with every text layer,
+
+00:00:48.803 --> 00:00:52.499
+speech and text align in a
+broad band in the middle layers.
+
+00:00:53.999 --> 00:00:57.561
+But alignment does not mean the
+model uses speech the same way.
+
+00:00:57.861 --> 00:01:02.622
+Layer by layer, we track how strongly
+the model prefers the correct answer.
+
+00:01:02.622 --> 00:01:05.605
+The margins split apart in the last six layers.
+
+00:01:05.905 --> 00:01:10.343
+And whichever input gets the answer
+right holds the larger margin there.
+
+00:01:12.043 --> 00:01:17.749
+At the moment of answering, attention over
+text concentrates on a few tokens. Over speech,
+
+00:01:17.749 --> 00:01:18.891
+it is spread thin.
+
+00:01:19.191 --> 00:01:25.719
+In late layers, speech needs 3.7 times as many
+tokens to hold 90 percent of the attention.
+
+00:01:26.019 --> 00:01:27.706
+With the input held fixed,
+
+00:01:27.706 --> 00:01:33.613
+sharpening late speech attention increases
+answer separation in all four conditions tested.
+
+00:01:35.313 --> 00:01:37.980
+Across models, the gap takes two forms.
+
+00:01:38.280 --> 00:01:44.674
+Qwen2.5-Omni and MiniCPM-o align in the
+middle, but decide differently late.
+
+00:01:44.674 --> 00:01:48.797
+Qwen2-Audio never aligns well in the first place.
+
+00:01:49.097 --> 00:01:52.749
+So repairs should target late
+answer formation in one case,
+
+00:01:52.749 --> 00:01:55.348
+and representation formation in the other.
+
+00:01:57.048 --> 00:02:00.397
+Geometric alignment is not functional equivalence.

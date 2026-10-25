@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>C-Gate cover</title>
+<!-- Edit this file, then run: node render_cover.mjs  (writes assets/video/poster.jpg and assets/img/cover-video.png without the band,
+     assets/img/cover-threads.png and assets/img/social-card.png with the band).
+     Designed at 1920x1080. Numbers in the bottom band are from the paper (Tables 1, 4, 15). -->
+<style>
+@font-face { font-family: S; src: url(../assets/fonts/source-serif-4-latin-opsz-normal.woff2); font-weight: 200 900; }
+@font-face { font-family: I; src: url(../assets/fonts/inter-latin-opsz-normal.woff2); font-weight: 100 900; }
+:root { --ink: #15203b; --muted: #5d6576; --blue: #2456a6; --rule: #dfe3ea; }
+html, body { margin: 0; background: #fff; }
+#c { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: #fff; color: var(--ink); font-family: I, sans-serif; }
+#head { position: absolute; left: 110px; top: 66px; }
+h1 { font: 600 100px/1 S, serif; letter-spacing: -.012em; margin: 0; color: var(--blue); }
+.sub { font: 400 38px/1.25 S, serif; margin-top: 16px; color: var(--ink); }
+.logos { position: absolute; right: 110px; top: 76px; display: flex; flex-direction: column; align-items: flex-end; gap: 22px; }
+.logos img:first-child { height: 60px; }
+.logos img:last-child { height: 40px; }
+#fig { position: absolute; left: 110px; top: 258px; width: 1700px; height: 600px; }
+#fig text { font-family: I, sans-serif; }
+#band { position: absolute; left: 110px; right: 110px; top: 892px; border-top: 2px solid var(--ink); display: flex; justify-content: space-between; align-items: flex-end; padding-top: 28px; }
+.stats { display: flex; align-items: flex-end; }
+.stat { padding-right: 46px; margin-right: 46px; border-right: 1px solid var(--rule); }
+.stat:last-child { border-right: 0; margin-right: 0; padding-right: 0; }
+.stat .n { font: 600 66px/1 S, serif; font-variant-numeric: lining-nums tabular-nums; color: var(--ink); }
+.stat:nth-child(-n+2) .n { color: var(--blue); }
+.stat .l { font: 600 24px/1.2 I, sans-serif; color: var(--muted); margin-top: 10px; }
+/* two versions, chosen by render_cover.mjs:
+   .video  video cover, no number band, figure centred in the freed space
+   .promo  promo cover (Threads, X, link previews), the four numbers spread across the band */
+.video #band { display: none; }
+.video #fig { top: 350px; }
+.promo .stats { width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); align-items: end; }
+.promo .stat { margin: 0; padding: 0 0 0 48px; border-right: 0; border-left: 1px solid var(--rule); }
+.promo .stat:first-child { padding-left: 0; border-left: 0; }
+</style>
+</head>
+<body>
+<div id="c">
+  <div id="head">
+    <h1>Is Text All You Need?</h1>
+    <div class="sub">Text as a Universal Information Bottleneck for Speech LLMs</div>
+  </div>
+  <div class="logos"><img src="../assets/img/cuhk-shenzhen.png" alt=""><img src="../assets/img/microsoft.png" alt=""></div>
+  <svg id="fig" viewBox="0 0 1700 600"></svg>
+  <div id="band">
+    <div class="stats">
+      <div class="stat"><div class="n">3.98%</div><div class="l">WER, test-clean</div></div>
+      <div class="stat"><div class="n">84.3%</div><div class="l">Emotion accuracy</div></div>
+      <div class="stat"><div class="n">16</div><div class="l">Frozen rows per frame</div></div>
+      <div class="stat"><div class="n">8.6%</div><div class="l">Parameters trained</div></div>
+    </div>
+  </div>
+</div>
+<script>
+// preview one version in the browser: cover.html?video or cover.html?promo
+if (/^\?(video|promo)$/.test(location.search)) document.getElementById("c").classList.add(location.search.slice(1));
+const NS = "http://www.w3.org/2000/svg";
+const el = (p, n, a) => { const e = document.createElementNS(NS, n); for (const x in a) e.setAttribute(x, a[x]); p.append(e); return e; };
+const txt = (p, x, y, s, size, fill, weight = 500, anchor = "middle", extra = {}) => {
+  const t = el(p, "text", { x, y, "font-size": size, fill, "font-weight": weight, "text-anchor": anchor, ...extra }); t.textContent = s; return t; };
+const INK = "#15203b", MUTED = "#5d6576", BLUE = "#2456a6", FAINT = "#c9cfd8", AMBER = "#c98a2b";
+const HUE = ["#2456a6", "#2c7da0", "#3d8f6f", "#6a55b5", "#b4652d"];
+const tint = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`; };
+let seed = 41; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+const hullPts = (P) => { const p = [...P].sort((a, b) => a[0] - b[0] || a[1] - b[1]); const cr = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+  const lo = [], up = []; for (const q of p) { while (lo.length > 1 && cr(lo.at(-2), lo.at(-1), q) <= 0) lo.pop(); lo.push(q); }
+  for (const q of p.reverse()) { while (up.length > 1 && cr(up.at(-2), up.at(-1), q) <= 0) up.pop(); up.push(q); } return lo.slice(0, -1).concat(up.slice(0, -1)); };
+const svg = document.getElementById("fig");
+const gBack = el(svg, "g", {}), gArcs = el(svg, "g", {}), gMain = el(svg, "g", {}), gTop = el(svg, "g", {});
+
+// ---------------------------------------------------------------- 1. speech, five frames
+const wy = 470, segW = 58, gap = 12;
+const segs = HUE.map((_, i) => [i * (segW + gap), i * (segW + gap) + segW]);
+const tops = [];
+segs.forEach(([x0, x1], si) => {
+  const n = Math.round((x1 - x0) / 6.5); let mx = 0;
+  for (let i = 0; i < n; i++) {
+    const x = x0 + 3 + i * 6.5, env = Math.sin(Math.PI * (i + .5) / n) ** .8, h = 12 + env * (34 + 86 * rnd());
+    mx = Math.max(mx, h);
+    el(gMain, "line", { x1: x, x2: x, y1: wy - h / 2, y2: wy + h / 2, stroke: INK, "stroke-width": 3.6, "stroke-linecap": "round" });
+  }
+  el(gMain, "line", { x1: x0 + 2, x2: x1 - 2, y1: wy + 84, y2: wy + 84, stroke: HUE[si], "stroke-width": 6, "stroke-linecap": "round" });
+  tops.push(wy - mx / 2 - 14);
+});
+
+// ---------------------------------------------------------------- 2. scoring strip: all rows, top 16 per frame
+const SX = 420, SY0 = 30, SY1 = 590, SW = 34;
+el(gBack, "rect", { x: SX, y: SY0, width: SW, height: SY1 - SY0, rx: 6, fill: "#f3f5f8", stroke: "#d6dce5", "stroke-width": 2 });
+for (let y = SY0 + 8; y < SY1 - 6; y += 7) el(gBack, "line", { x1: SX + 6, x2: SX + SW - 6, y1: y, y2: y, stroke: "#d3d9e2", "stroke-width": 1.6 });
+txt(gMain, SX + SW / 2, SY0 - 12, "152,064 rows", 20, MUTED, 500);
+// the arc of frame si enters the strip at ARC_Y[si]; leftmost frame highest so arcs nest without crossing
+const ARC_Y = [64, 120, 176, 232, 288];
+const stripTicks = HUE.map((h, si) => { const ys = [ARC_Y[si]]; for (let k = 0; k < 3; k++) ys.push(SY0 + 300 + Math.floor(rnd() * 36) * 7); return ys; });
+stripTicks.forEach((ys, si) => ys.forEach((y) => el(gTop, "line", { x1: SX + 4, x2: SX + SW - 4, y1: y, y2: y, stroke: HUE[si], "stroke-width": 4.5, "stroke-linecap": "round" })));
+
+// ---------------------------------------------------------------- 3. frozen embedding panel
+const PX0 = 520, PX1 = 1220, PY0 = 8, PY1 = 592;
+el(gBack, "rect", { x: PX0, y: PY0, width: PX1 - PX0, height: PY1 - PY0, rx: 24, fill: "#f7f9fc", stroke: "#dde3ec", "stroke-width": 2 });
+const snow = el(gMain, "g", { transform: `translate(${PX0 + 42},${PY0 + 40})`, stroke: BLUE, "stroke-width": 3, "stroke-linecap": "round", fill: "none" });
+for (let a = 0; a < 3; a++) {
+  const r = a * Math.PI / 3, dx = Math.cos(r) * 18, dy = Math.sin(r) * 18;
+  el(snow, "line", { x1: -dx, y1: -dy, x2: dx, y2: dy });
+  for (const s of [1, -1]) { const bx = s * dx * .6, by = s * dy * .6, rr = r + (s > 0 ? 0 : Math.PI);
+    el(snow, "path", { d: `M${bx + Math.cos(rr + 2.4) * 6},${by + Math.sin(rr + 2.4) * 6} L${bx},${by} L${bx + Math.cos(rr - 2.4) * 6},${by + Math.sin(rr - 2.4) * 6}` }); }
+}
+txt(gMain, PX0 + 72, PY0 + 49, "Frozen text embeddings", 25, MUTED, 500, "start");
+for (let i = 0; i < 170; i++) el(gBack, "circle", { cx: PX0 + 24 + rnd() * (PX1 - PX0 - 48), cy: PY0 + 84 + rnd() * (PY1 - PY0 - 104), r: 3.6, fill: FAINT });
+// frequently selected rows (paper Appendix D.3): word pieces, not emotion words
+const freq = [["CSS", PX1 - 150, 120], ["foundation", PX0 + 170, 560], ["repeat", PX1 - 110, 420], [".day", PX0 + 300, 130]];
+freq.forEach(([s, x, y]) => { el(gBack, "circle", { cx: x - 10, cy: y - 8, r: 4.6, fill: "#9aa3b2" }); txt(gMain, x, y, s, 21, "#8a92a1", 500, "start", { "font-family": "ui-monospace, Menlo, monospace" }); });
+
+const centers = [[1110, 220], [990, 300], [860, 370], [740, 300], [640, 440]];
+const peaks = [24, 70, 116, 162, 208];
+const Z = [], zoomIdx = 2; let zoomW = null;
+centers.forEach(([cx, cy], si) => {
+  const P = [];
+  for (let i = 0; i < 16; i++) { const a = rnd() * 6.283, d = 12 + Math.sqrt(rnd()) * 36; P.push([cx + Math.cos(a) * d * 1.15, cy + Math.sin(a) * d * .8]); }
+  el(gMain, "polygon", { points: hullPts(P).map((p) => p.join(",")).join(" "), fill: tint(HUE[si], .14), stroke: HUE[si], "stroke-width": 2.2, "stroke-linejoin": "round" });
+  const w = P.map(() => .82 + .18 * rnd()), ws = w.reduce((a, b) => a + b);
+  const z = P.reduce((acc, p, i) => [acc[0] + w[i] / ws * p[0], acc[1] + w[i] / ws * p[1]], [0, 0]);
+  P.forEach((p) => el(gMain, "line", { x1: z[0], y1: z[1], x2: p[0], y2: p[1], stroke: HUE[si], "stroke-width": 1.6, "stroke-opacity": .35 }));
+  P.forEach((p) => el(gMain, "circle", { cx: p[0], cy: p[1], r: 4.4, fill: HUE[si] }));
+  el(gTop, "circle", { cx: z[0], cy: z[1], r: 9, fill: INK, stroke: "#fff", "stroke-width": 3.5 });
+  // arc: speech frame -> strip -> hull
+  const [x0, x1] = segs[si], s0 = (x0 + x1) / 2, sy0 = tops[si], ty = stripTicks[si][0];
+  el(gArcs, "path", { d: `M${s0},${sy0} C${s0},${ty} ${SX - 40},${ty} ${SX},${ty}`, fill: "none", stroke: HUE[si], "stroke-width": 3, "stroke-opacity": .7, "stroke-linecap": "round" });
+  el(gArcs, "path", { d: `M${SX + SW},${ty} C${SX + SW + 120},${ty} ${z[0] - 140},${z[1]} ${z[0]},${z[1]}`, fill: "none", stroke: HUE[si], "stroke-width": 2.4, "stroke-opacity": .45, "stroke-dasharray": "1 7", "stroke-linecap": "round" });
+  el(gArcs, "circle", { cx: s0, cy: sy0, r: 6, fill: HUE[si] });
+  Z.push(z);
+  if (si === zoomIdx) zoomW = w.map((v) => v / ws).sort((a, b) => b - a);
+});
+// weights card: near-uniform, as measured
+const [zx, zy] = Z[zoomIdx], R = 62;
+el(gTop, "circle", { cx: zx, cy: zy, r: R, fill: "none", stroke: INK, "stroke-width": 2.5, "stroke-dasharray": "2 7", "stroke-linecap": "round" });
+const card = { x: 860, y: 448, w: 320, h: 130 };
+el(gTop, "line", { x1: zx + R * .6, y1: zy + R * .8, x2: card.x + 30, y2: card.y, stroke: INK, "stroke-width": 2, "stroke-dasharray": "2 7", "stroke-linecap": "round" });
+el(gTop, "rect", { x: card.x, y: card.y, width: card.w, height: card.h, rx: 16, fill: "#fff", stroke: "#cfd6e0", "stroke-width": 2 });
+const bw = 12, bg = 5.2, bx0 = card.x + 26, by0 = card.y + card.h - 36;
+zoomW.forEach((v, i) => el(gTop, "rect", { x: bx0 + i * (bw + bg), y: by0 - v / zoomW[0] * 64, width: bw, height: v / zoomW[0] * 64, rx: 2, fill: HUE[zoomIdx] }));
+el(gTop, "line", { x1: bx0 - 4, x2: bx0 + 16 * (bw + bg), y1: by0, y2: by0, stroke: INK, "stroke-width": 1.5 });
+txt(gTop, bx0, by0 + 26, "16 weights", 18, MUTED, 500, "start");
+txt(gTop, card.x + card.w - 20, by0 + 26, "Σ = 1", 19, INK, 600, "end");
+
+// ---------------------------------------------------------------- 4. token sequence into one decoder, two readouts
+const TX = 1292, TS = 36, TY0 = 96, TStep = 52;
+const toks = [{ fill: "#e6e9ee", stroke: "#b8c0cc" }, { fill: "#e6e9ee", stroke: "#b8c0cc" }].concat(HUE.map((h, i) => ({ fill: tint(h, .9), stroke: h, i })));
+toks.forEach((t, k) => {
+  t.y = TY0 + k * TStep;
+  if (t.i !== undefined) { const z = Z[t.i], ty = t.y + TS / 2;
+    el(gArcs, "path", { d: `M${z[0]},${z[1]} C${(z[0] + TX) / 2 + 40},${z[1]} ${TX - 60},${ty} ${TX},${ty}`, fill: "none", stroke: HUE[t.i], "stroke-width": 2, "stroke-opacity": .4, "stroke-dasharray": "1 6", "stroke-linecap": "round" }); }
+  el(gTop, "rect", { x: TX, y: t.y, width: TS, height: TS, rx: 7, fill: t.fill, stroke: t.stroke, "stroke-width": 2 });
+});
+txt(gTop, TX + TS / 2, TY0 - 16, "prompt", 18, MUTED, 500);
+const LX = 1400, LY = 40, LW = 290, LH = 360;
+el(gTop, "path", { d: `M${TX + TS + 12},${TY0 + 3 * TStep} L${LX - 12},${TY0 + 3 * TStep}`, stroke: INK, "stroke-width": 3, "stroke-linecap": "round" });
+el(gTop, "path", { d: `M${LX - 24},${TY0 + 3 * TStep - 10} L${LX - 12},${TY0 + 3 * TStep} L${LX - 24},${TY0 + 3 * TStep + 10}`, fill: "none", stroke: INK, "stroke-width": 3, "stroke-linecap": "round", "stroke-linejoin": "round" });
+el(gBack, "rect", { x: LX - 12, y: LY + 14, width: LW, height: LH, rx: 24, fill: "#f2f4f7" });
+el(gTop, "rect", { x: LX, y: LY, width: LW, height: LH, rx: 24, fill: "#fff", stroke: "#c4ccd8", "stroke-width": 2.4 });
+for (let i = 0; i < 4; i++) el(gTop, "rect", { x: LX + 34, y: LY + 112 + i * 52, width: LW - 68, height: 32, rx: 8, fill: i % 2 ? "#eef1f6" : "#e3e8f1" });
+txt(gTop, LX + LW / 2, LY + 72, "LLM", 40, INK, 600);
+// two readouts
+const outs = [["Transcript", AMBER, 486], ["Emotion", BLUE, 486]];
+outs.forEach(([s, col, y], k) => {
+  const x = LX + 40 + k * 0;
+  el(gTop, "path", { d: `M${LX + LW / 2 + (k ? 40 : -40)},${LY + LH + 4} L${LX + LW / 2 + (k ? 40 : -40)},${y - 26}`, stroke: col, "stroke-width": 3, "stroke-linecap": "round" });
+  el(gTop, "rect", { x: LX + (k ? LW / 2 + 4 : 4), y: y - 26, width: LW / 2 - 8, height: 46, rx: 23, fill: "#fff", stroke: col, "stroke-width": 2.4 });
+  txt(gTop, LX + (k ? LW * .75 : LW * .25), y + 5, s, 21, col, 600);
+});
+
+document.title = "ready";
+</script>
+</body>
+</html>
