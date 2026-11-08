@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cover</title>
+<!--
+  Cover, designed at 1920x1080. Render with `node render_cover.mjs`: writes assets/video/poster.jpg and
+  assets/img/cover-video.png (video cover), assets/img/cover-threads.png and assets/img/social-card.png (promo).
+
+  Rules that came out of three rounds of feedback:
+  - Title only (short name large, the rest as subtitle). No author names, no formula, no "arXiv" on top.
+  - One large figure made of 3-5 DIFFERENT components (input, method part, a real result plot, ...),
+    joined by arrows in reading order. Not one component repeated.
+  - Two versions from one layout: the video cover has no number band; the promo cover (Threads, X,
+    link previews) keeps a band with the four numbers only, no extra chart.
+  - Must still read as a thumbnail: check tools/cover-thumb.png (480x270).
+  Data drawn here comes from ../assets/data/results.json, so it matches the page.
+-->
+<style>
+@font-face { font-family: S; src: url(../assets/fonts/source-serif-4-latin-opsz-normal.woff2); font-weight: 200 900; }
+@font-face { font-family: I; src: url(../assets/fonts/inter-latin-opsz-normal.woff2); font-weight: 100 900; }
+:root { --ink: #15203b; --muted: #5d6576; --blue: #2456a6; --rule: #dfe3ea; }
+html, body { margin: 0; background: #fff; }
+#c { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: #fff; color: var(--ink); font-family: I, sans-serif; }
+#head { position: absolute; left: 110px; top: 70px; }
+h1 { font: 600 96px/1.02 S, serif; letter-spacing: -.012em; margin: 0; color: var(--blue); }
+.sub { font: 400 40px/1.25 S, serif; margin-top: 16px; color: var(--ink); max-width: 1250px; }
+.logos { position: absolute; right: 110px; top: 80px; display: flex; flex-direction: column; align-items: flex-end; gap: 24px; }
+.logos img { height: 60px; }
+.logos img + img { height: 42px; }
+#fig { position: absolute; left: 110px; top: 330px; width: 1700px; height: 530px; }
+#fig text { font-family: I, sans-serif; }
+#band { position: absolute; left: 110px; right: 110px; top: 892px; border-top: 2px solid var(--ink); display: flex; justify-content: space-between; align-items: flex-end; padding-top: 28px; }
+.stats { display: flex; align-items: flex-end; }
+.stat { padding-right: 44px; margin-right: 44px; border-right: 1px solid var(--rule); }
+.stat:last-child { border-right: 0; margin-right: 0; padding-right: 0; }
+.stat .n { font: 600 66px/1 S, serif; font-variant-numeric: lining-nums tabular-nums; color: var(--ink); }
+.stat .n.accent { color: var(--blue); }
+.stat .l { font: 600 24px/1.2 I, sans-serif; color: var(--muted); margin-top: 10px; }
+/* two versions, chosen by render_cover.mjs:
+   .video  video cover, no number band, figure centred in the freed space
+   .promo  promo cover (Threads, X, link previews), the four numbers spread across the band */
+.video #band { display: none; }
+.video #fig { top: 400px; }
+.promo .stats { width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); align-items: end; }
+.promo .stat { margin: 0; padding: 0 0 0 48px; border-right: 0; border-left: 1px solid var(--rule); }
+.promo .stat:first-child { padding-left: 0; border-left: 0; }
+</style>
+</head>
+<body>
+<div id="c">
+  <div id="head">
+    <h1>ReListen</h1>
+    <div class="sub">Training-Free Evidence Localization in Hour-Long Audio with Frozen Audio Language Models</div>
+  </div>
+  <div class="logos">
+    <img src="../assets/img/cuhk-shenzhen.png" alt="">
+    <img src="../assets/img/microsoft.png" alt="">
+  </div>
+  <svg id="fig" viewBox="0 0 1700 530"></svg>
+  <div id="band">
+    <div class="stats">
+      <div class="stat"><div class="n accent">88.5%</div><div class="l">Evidence found</div></div>
+      <div class="stat"><div class="n">+9.2</div><div class="l">Over a full transcript</div></div>
+      <div class="stat"><div class="n accent">47.7</div><div class="l">Grounding mIoU, no training</div></div>
+      <div class="stat"><div class="n">7–8×</div><div class="l">Faster than transcripts</div></div>
+    </div>
+  </div>
+</div>
+<script>
+// preview one version in the browser: cover.html?video or cover.html?promo
+if (/^\?(video|promo)$/.test(location.search)) document.getElementById("c").classList.add(location.search.slice(1));
+const NS = "http://www.w3.org/2000/svg";
+const el = (p, n, a) => { const e = document.createElementNS(NS, n); for (const x in a) e.setAttribute(x, a[x]); p.append(e); return e; };
+const txt = (p, x, y, s, size, fill, weight = 500, anchor = "middle", extra = {}) => {
+  const t = el(p, "text", { x, y, "font-size": size, fill, "font-weight": weight, "text-anchor": anchor, ...extra }); t.textContent = s; return t; };
+const INK = "#15203b", MUTED = "#5d6576", BLUE = "#2456a6", BLUE_SOFT = "#eaf0f9", GREY = "#9aa3b2", RULE = "#d6dce5", CURVE = "#3b4763";
+const card = (g, x, y, w, h, title, accent) => {
+  el(g, "rect", { x, y, width: w, height: h, rx: 14, fill: accent ? BLUE_SOFT : "#fff", stroke: accent ? "#9db4dc" : RULE, "stroke-width": 2 });
+  if (title) txt(g, x + 26, y + 42, title, 23, accent ? BLUE : MUTED, 600, "start");
+};
+const arrow = (g, x1, y1, x2, y2, col = "#97a1b1") => {
+  el(g, "path", { d: `M${x1},${y1} L${x2},${y2}`, stroke: col, "stroke-width": 2.6 });
+  el(g, "path", { d: `M${x2 - 11},${y2 - 9} L${x2},${y2} L${x2 - 11},${y2 + 9}`, fill: "none", stroke: col, "stroke-width": 2.6, "stroke-linejoin": "round" });
+};
+// illustrative waveform: vertical strokes with a slowly varying envelope
+const wave = (g, x0, x1, yc, amp, step, col, w, seed0) => {
+  let seed = seed0; const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+  let d = "";
+  for (let x = x0; x <= x1; x += step) {
+    const env = .45 + .3 * Math.sin(x / 31) * Math.sin(x / 9.7) + .25 * rnd();
+    const h = Math.max(2, amp * env);
+    d += `M${x.toFixed(1)} ${(yc - h).toFixed(1)}V${(yc + h).toFixed(1)}`;
+  }
+  el(g, "path", { d, stroke: col, "stroke-width": w, "stroke-linecap": "round", fill: "none" });
+};
+const check = (g, x, y, r, col) => el(g, "path", { d: `M${x - r} ${y}l${r * .7} ${r * .7}l${r * 1.3} ${-r * 1.5}`, fill: "none", stroke: col, "stroke-width": 4, "stroke-linecap": "round", "stroke-linejoin": "round" });
+
+fetch("../assets/data/results.json").then((r) => r.json()).then((D) => {
+  const g = document.getElementById("fig");
+  const sc = D.scan_pizza, centre = (i) => (i * sc.hop + sc.win / 2) / 60;
+  const CY = 60, CH = 410;
+
+  // 1. input: an hour-long recording and a question about a few seconds of it (same example as the film)
+  card(g, 0, CY, 340, CH, "an 84-minute recording");
+  ["How many distinct", "speakers are heard", "during the pizza", "debate?"].forEach((l, k) => txt(g, 26, 150 + k * 36, l, 28, INK, 500, "start", { "font-style": "italic" }));
+  wave(g, 26, 314, 346, 34, 3.6, GREY, 2.2, 7);
+  txt(g, 26, 430, "0", 20, MUTED, 500, "start");
+  txt(g, 314, 430, "84 min", 20, MUTED, 500, "end");
+  arrow(g, 352, 265, 410, 265);
+
+  // 2. the scan: the real score of every 20 s window (paper Figure 1)
+  const SX = 422, SW = 480;
+  card(g, SX, CY, SW, CH, "score every 20 s window", true);
+  txt(g, SX + 26, 136, "frozen model, one pass each", 21, MUTED, 500, "start");
+  const X = (m) => SX + 26 + m / sc.minutes * (SW - 52), Y = (v) => 322 - v * 28;
+  el(g, "line", { x1: SX + 26, x2: SX + SW - 26, y1: Y(0), y2: Y(0), stroke: "#a9b1bd", "stroke-width": 1.6, "stroke-dasharray": "3 5" });
+  el(g, "polyline", { points: sc.s.map((v, i) => `${X(centre(i)).toFixed(1)},${Y(v).toFixed(1)}`).join(" "), fill: "none", stroke: CURVE, "stroke-width": 1.8, "stroke-linejoin": "round" });
+  sc.top.forEach((i) => el(g, "circle", { cx: X(centre(i)), cy: Y(sc.s[i]), r: 6.5, fill: BLUE, stroke: "#fff", "stroke-width": 1.6 }));
+  txt(g, X(28) + 14, Y(3.24) - 6, "the evidence", 22, BLUE, 600, "start");
+  txt(g, SX + 26, 446, "0", 20, MUTED, 500, "start");
+  txt(g, SX + SW - 26, 446, "84 min", 20, MUTED, 500, "end");
+  arrow(g, SX + SW + 12, 265, SX + SW + 70, 265, "#4f74b8");
+
+  // 3. listen again to the best minute, then answer
+  const LX = 984, LW = 340;
+  card(g, LX, CY, LW, CH, "listen to the best minute");
+  sc.top.forEach((i, k) => {
+    const x = LX + 26 + k * 100;
+    el(g, "rect", { x, y: 120, width: 88, height: 64, rx: 8, fill: "#d9e4f6", stroke: "#7f9ccf", "stroke-width": 2 });
+    wave(g, x + 10, x + 78, 152, 20, 3.4, BLUE, 2.2, 11 + k);
+    const t = i * sc.hop; txt(g, x + 44, 214, `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`, 22, BLUE, 600);
+  });
+  el(g, "path", { d: `M${LX + LW / 2} 236V270`, stroke: "#97a1b1", "stroke-width": 2.6 });
+  el(g, "path", { d: `M${LX + LW / 2 - 9} 260L${LX + LW / 2} 271L${LX + LW / 2 + 9} 260`, fill: "none", stroke: "#97a1b1", "stroke-width": 2.6 });
+  el(g, "rect", { x: LX + 60, y: 282, width: LW - 120, height: 58, rx: 12, fill: "#f6f7f9", stroke: "#dde2e9", "stroke-width": 2 });
+  txt(g, LX + LW / 2, 320, "same frozen model", 22, INK, 600);
+  txt(g, LX + LW / 2 - 22, 412, `answer: ${sc.answer}`, 34, INK, 600);
+  check(g, LX + LW / 2 + 80, 400, 11, BLUE);
+  arrow(g, LX + LW + 12, 265, LX + LW + 70, 265);
+
+  // 4. the result: evidence hit rate on VoiceGiraffe (paper Table 2)
+  const RX = 1406, RW = 294;
+  card(g, RX, CY, RW, CH, "evidence found");
+  txt(g, RX + 26, 136, "VoiceGiraffe, 60 s each", 21, MUTED, 500, "start");
+  const rows = [["ReListen", 4], ["BM25", 2], ["BGE-M3", 3], ["Uniform", 0]].map(([n, k]) => [n, D.hit.series[k].values[1], k === 4]);
+  rows.forEach(([name, v, ours], k) => {
+    const y = 180 + k * 66, bw = (RW - 52) * v / 100;
+    txt(g, RX + 26, y, name, 22, ours ? BLUE : INK, ours ? 700 : 500, "start");
+    el(g, "rect", { x: RX + 26, y: y + 12, width: bw, height: 22, rx: 3, fill: ours ? BLUE : "#c2c8d2" });
+    txt(g, RX + RW - 26, y, `${v.toFixed(1)}%`, 22, ours ? BLUE : MUTED, ours ? 700 : 500, "end");
+  });
+
+  document.title = "ready";
+});
+</script>
+</body>
+</html>

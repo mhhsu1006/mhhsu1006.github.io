@@ -1,0 +1,248 @@
+<!doctype html>
+<!--
+  Project page source. Edit this file, then run `node build.mjs` in tools/ to write ../index.html.
+  Build placeholders: {{NAME}} (filled by build.mjs), {{PARTIAL:file}} (tools/partials/file.html),
+  <math-tex>…</math-tex> and <math-tex display>…</math-tex> (KaTeX at build time).
+  Writing rules the build checks: no semicolons in prose, no confidence intervals or "n = …" counts.
+  Content rule: strengths only. Left out on purpose (full numbers in the paper):
+    LongAudioSpan accuracy against transcripts and the full recording (Table 1), R@0.5 and R@0.7 on
+    LAT-Bench (Table 3), the annotated-evidence upper bound (Section 5.5), whole-recording questions (Section 5.6).
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ReListen: Training-Free Evidence Localization in Hour-Long Audio with Frozen Audio Language Models</title>
+  <meta name="description" content="ReListen lets a frozen audio language model find its own evidence in an hour-long recording. It scores every 20-second window by how likely it is to help answer the question, then answers from the best minute, with no transcript and no training.">
+  <meta name="author" content="Ming-Hao Hsu, Shujie Liu, Yuxuan Hu, Yuxiang Wang, Yingda Shen, Jinyu Li, Zhizheng Wu">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#ffffff">
+  <!-- Social preview. Build with SITE_URL set (see README) so these become absolute. -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ReListen: Training-Free Evidence Localization in Hour-Long Audio">
+  <meta property="og:description" content="A frozen audio language model finds its own evidence in hour-long recordings, with no transcript and no training.">
+  <meta property="og:image" content="{{SITE_URL}}assets/img/social-card.png">
+  <meta property="og:url" content="{{SITE_URL}}">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="{{SITE_URL}}assets/img/social-card.png">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/source-serif-4-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/inter-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="assets/katex/katex.min.css">
+  <link rel="stylesheet" href="assets/style.css">
+  <script src="assets/site.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<nav class="topnav" aria-label="Sections">
+  <div class="topnav-inner">
+    <a class="topnav-name" href="#top">ReListen</a>
+    <div class="topnav-links">
+      <a href="#overview">Overview</a>
+      <a href="#method">Method</a>
+      <a href="#results">Results</a>
+      <a href="#analysis">Analysis</a>
+      <a href="#citation">BibTeX</a>
+    </div>
+  </div>
+</nav>
+
+<main id="main">
+<header class="masthead" id="top">
+  <p class="kicker">Preprint</p>
+  <h1><span class="h1-name">ReListen:</span> Training-Free Evidence Localization in Hour-Long Audio with Frozen Audio Language Models</h1>
+
+  <p class="authors">
+    <span>Ming-Hao Hsu<sup>1</sup></span>
+    <span>Shujie Liu<sup>3</sup></span>
+    <span>Yuxuan Hu<sup>2</sup></span>
+    <span>Yuxiang Wang<sup>1</sup></span>
+    <span>Yingda Shen<sup>1</sup></span>
+    <span>Jinyu Li<sup>2</sup></span>
+    <span>Zhizheng Wu<sup>1</sup></span>
+  </p>
+  <p class="affils">
+    <span><sup>1</sup>School of Data Science, The Chinese University of Hong Kong, Shenzhen</span>
+    <span><sup>2</sup>Microsoft CoreAI</span>
+    <span><sup>3</sup>Microsoft Research Asia</span>
+  </p>
+
+  <div class="links">
+    <a class="btn" href="{{PAPER_URL}}" target="_blank" rel="noopener">{{ICON_PAPER}}<span>Paper</span></a>
+    <a class="btn" href="{{PDF_URL}}" target="_blank" rel="noopener">{{ICON_PDF}}<span>PDF</span></a>
+    <a class="btn" href="#video">{{ICON_PLAY}}<span>Video</span></a>
+    <!-- Hidden until RELEASE in assets/site.js gets a URL or "soon". ReListen trains nothing, so there is no Weights button. -->
+    <a class="btn" id="link-code" hidden>{{ICON_CODE}}<span>Code</span></a>
+    <a class="btn" href="#citation">{{ICON_QUOTE}}<span>BibTeX</span></a>
+  </div>
+
+  {{LOGOS}}
+</header>
+
+
+<!-- The VTT is a metadata track, so the browser draws no captions of its own. site.js draws them
+     in the film's subtitle style; the CC button turns them off. -->
+<figure class="teaser wide" id="video">
+  <div class="video-wrap">
+    <video controls preload="metadata" playsinline poster="assets/video/poster.jpg">
+      <source src="assets/video/{{VIDEO}}.mp4" type="video/mp4">
+      <track kind="metadata" src="assets/video/{{VIDEO}}.en.vtt" srclang="en" label="English">
+      Your browser cannot play this video. <a href="assets/video/{{VIDEO}}.mp4">Download the MP4</a>.
+    </video>
+    <div class="cc" aria-hidden="true"><span></span></div>
+    <button type="button" class="cc-toggle" aria-pressed="true" aria-label="Captions">CC</button>
+  </div>
+</figure>
+
+<section class="prose" id="overview">
+  <h2>Overview</h2>
+  <p class="tldr"><b>TL;DR</b> A frozen audio language model can search an hour-long recording by itself. It asks of every 20-second window whether it helps answer the question, then listens again to the best minute, with no transcript and no training.</p>
+  <p>Meetings, lectures, broadcasts and podcasts last an hour or more, yet the answer to a question often sits in a few seconds of them. Many audio language models cannot take an hour of audio as input, and those that can must still find those seconds. A common fix transcribes the recording first and searches or reads the text. That makes the hour fit, but it throws away the sounds, voices and timing that audio models are built to hear. Systems that return to the audio instead must be trained for it, again for every new model.</p>
+  <p>ReListen reduces the search to many small decisions the model can already make: does this short excerpt help answer the question? One frozen model reads each yes/no decision as a probability, ranks every window of the recording, and then answers from the highest-scoring minute, labelled with its times. We fix the configuration on half of LongAudioSpan and evaluate it unchanged on the other half, on VoiceGiraffe and on LAT-Bench.</p>
+  <ul class="findings">
+    <li><b>Finds the evidence</b><span>The selected minute overlaps the annotated evidence for 88.5% of VoiceGiraffe questions, against 58.8% for transcript retrieval.</span></li>
+    <li><b>Grounds events</b><span>Without any change, the same scan reaches 47.7 mIoU on LAT-Bench, on par with LAT-Audio, a model trained for temporal grounding (46.3).</span></li>
+    <li><b>Answers better</b><span>On VoiceGiraffe, one selected minute beats a transcript of the whole recording by 9.2 points and the full recording by 10.6.</span></li>
+    <li><b>Answers faster</b><span>It is seven to eight times faster than the reader's transcript pipeline, and its memory stays constant with duration.</span></li>
+  </ul>
+</section>
+
+<section class="highlights" id="highlights" aria-label="Key results">
+  <dl class="hl-facts">
+    <div><dt class="accent">88.5%</dt><dd><b>Evidence found</b>VoiceGiraffe hit rate, against 58.8% for transcript retrieval</dd></div>
+    <div><dt>+9.2</dt><dd><b>Over a full transcript</b>VoiceGiraffe accuracy, from one minute of audio</dd></div>
+    <div><dt class="accent">47.7</dt><dd><b>Grounding mIoU</b>LAT-Bench with no training, against 46.3 for trained LAT-Audio</dd></div>
+    <div><dt>7–8×</dt><dd><b>Faster than transcripts</b>seconds per question, against the reader's transcript pipeline</dd></div>
+  </dl>
+  <figure class="hl-chart">
+    <div role="img" aria-label="Scores of every 20-second window of an 84-minute recording, with a zoom on the three best windows near minute 28, which overlap the annotated evidence">{{FIG1}}</div>
+    <figcaption><b>Figure 1.</b> ReListen on a test question about an 84-minute recording: <i>How many distinct speakers are heard during the pineapple-pizza and cold-pizza debate?</i> The frozen model scores every window, its three best windows overlap the annotated evidence, and the answer from them is correct. Scores are read from the paper's vector figure. <a href="#method">Method</a></figcaption>
+  </figure>
+</section>
+
+<section id="method">
+  <div class="prose">
+    <h2>Method</h2>
+    <p>ReListen uses one frozen audio language model, the <em>reader</em>, both to search and to answer. It cuts the recording into 20-second windows every 10 seconds. For each window, the reader hears the audio with a prompt built from the question: <q>Does this audio excerpt contain information that helps answer the question? Answer yes or no.</q> No answer is decoded. We read the next-token distribution at the answer position instead.</p>
+  </div>
+  <figure class="wide figure">
+    {{METHOD}}
+    <figcaption><b>Figure 2.</b> One frozen reader scores every window, keeps the three best, and answers from them. Nothing is trained. Blue marks what ReListen adds around the frozen model.</figcaption>
+  </figure>
+  <div class="prose">
+    <p>The score of window <math-tex>w_i</math-tex> is the log-odds of a yes, with <math-tex>c</math-tex> the yes/no prompt and <math-tex>p_\theta</math-tex> the reader's next-token distribution:</p>
+    <math-tex display>\ell_i = \log p_\theta(\text{yes} \mid w_i, c) - \log p_\theta(\text{no} \mid w_i, c)</math-tex>
+    <p>We call this a Jev-style scan, since like the Jev decision model it answers a typed yes/no question with a probability instead of text. Each window costs one forward pass, and all windows share the prompt and the length, so they batch without padding. The cost grows linearly with duration at constant memory, and the windows are independent, so the scan divides across GPUs.</p>
+    <p>ReListen then takes the windows in decreasing order of score, keeps those that do not overlap a window already kept, and stops at three, that is, 60 seconds of audio. The reader answers the original question once from these excerpts in order, each labelled with its start and end time in the recording. For a grounding query it returns one interval instead: the best window, extended left and right through consecutive windows with positive scores.</p>
+  </div>
+</section>
+
+<section id="results">
+  <div class="prose">
+    <h2>Results</h2>
+    <p>The reader is Qwen3-Omni-30B-A3B-Instruct with frozen weights and greedy decoding, and the same reader answers from every input, so differences reflect only what it receives. LongAudioSpan has recordings of 10 to 164 minutes, VoiceGiraffe 123 recordings of 35 to 79 minutes, and LAT-Bench 1,002 grounding queries about recordings of up to 30 minutes.</p>
+    <h3>The scan finds the evidence</h3>
+    <p>With the same 60-second budget, the scan's minute overlaps the annotated evidence for 69.2% of LongAudioSpan and 88.5% of VoiceGiraffe questions. Transcript retrieval with BM25 or BGE-M3 reaches at most 47.8% and 58.8%. The gap is largest on questions about sounds and voices, which leave no words to match. There, transcript retrieval falls to 45.6% and the scan keeps 76.5%.</p>
+  </div>
+  <figure class="wide figure">
+    <div role="img" aria-label="Evidence hit rate of five ways to choose 60 seconds of audio on LongAudioSpan, VoiceGiraffe and VoiceGiraffe sound questions">{{FIG_HIT}}</div>
+    <figcaption><b>Figure 3.</b> Evidence hit rate (%), the share of questions for which any selected excerpt overlaps the annotated evidence, with 60 seconds of audio each (paper Table 2). LongAudioSpan is its test half.</figcaption>
+  </figure>
+
+  <div class="prose">
+    <h3>One selected minute answers better</h3>
+    <p>On VoiceGiraffe, answering from the selected minute is the most accurate input. It beats uniformly spaced excerpts by 21.3 points, the whole recording by 10.6 points with 44 to 54 times less audio, and a transcript of the whole recording by 9.2 points. It is also ahead of the two systems that reason over timestamped transcripts. On LongAudioSpan, the same minute beats uniform excerpts by 8.5 points.</p>
+  </div>
+  <figure class="wide figure">
+    <div role="img" aria-label="VoiceGiraffe accuracy for five inputs on all questions, sound and voice questions, and content questions">{{FIG_VG}}</div>
+    <figcaption><b>Figure 4.</b> Accuracy (%) on VoiceGiraffe. Uniform excerpts and ReListen give the reader 60 seconds of audio, and the full recording carries time marks.</figcaption>
+  </figure>
+  <div class="wide table-wrap tbl-mid">
+    <div class="table-scroll" tabindex="0" role="region" aria-label="VoiceGiraffe accuracy by input">
+      {{TABLE_VG}}
+    </div>
+    <p class="small">Accuracy (%) on VoiceGiraffe from paper Table 1. Sound covers the Audio Event and Paralinguistic families, content the other four. Training marks a model fine-tuned for the task. ReListen-Fast scans with a 20-second hop, so it hears each second once. LongAudioSpan, whose questions mostly concern what is said, is in the same table.</p>
+  </div>
+
+  <div class="prose">
+    <h3>It grounds events without training</h3>
+    <p>For a grounding query, the expanded region of the scan reaches 47.7 mIoU on LAT-Bench without any change, on par with LAT-Audio, which is trained for temporal grounding and refines a global timeline with audio crops. The scan also finds the right region more often at an IoU of 0.3, and it grounds a query in 3.1 seconds, against 173 seconds for LAT-Audio.</p>
+  </div>
+  <div class="wide table-wrap tbl-mid">
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Event grounding on LAT-Bench">
+      {{TABLE_LAT}}
+    </div>
+    <p class="small">Mean IoU and recall at an IoU of 0.3 (%) on LAT-Bench, averaged equally over English and Chinese (paper Table 3, which also gives recall at 0.5 and 0.7). <sup>†</sup>Reported by the LAT-Bench authors.</p>
+  </div>
+
+  <div class="prose">
+    <h3>Faster than reading a transcript</h3>
+    <p>On LongAudioSpan, ReListen answers a question in 17.3 seconds on one GPU. The text-mediated systems take 27.6 to 1,124 seconds, since they first transcribe the whole recording. On both benchmarks ReListen is seven to eight times faster than the reader's transcript pipeline. Its peak memory stays below 68 GiB at every duration, whereas the full recording exceeds one 80 GB GPU beyond about 62 minutes. Because the windows are independent, four GPUs make the scan about three times faster with the same selections.</p>
+  </div>
+  <figure class="wide figure mid">
+    <div role="img" aria-label="VoiceGiraffe accuracy against seconds per question. All ReListen points lie above and to the left of the text-mediated systems">{{FIG_COST}}</div>
+    <figcaption><b>Figure 5.</b> Accuracy against mean seconds per question on VoiceGiraffe (paper Figure 5). Open marks divide the scan over four GPUs with the same selection. Every ReListen point lies left of all text-mediated systems and above them.</figcaption>
+  </figure>
+</section>
+
+<section id="analysis">
+  <div class="prose">
+    <h2>Analysis</h2>
+    <h3>The evidence is worth hearing, not only reading</h3>
+    <p>To test whether the selected minute should be heard rather than read, the reader also reads its own transcript of exactly the excerpts it would hear. On questions about what is said, listening and reading differ by about two points or less. On VoiceGiraffe questions about sounds and voices, listening is ahead by 8.6 points on the scan's excerpts and by 19.5 points on the annotated evidence, since a transcript discards what these questions ask about.</p>
+  </div>
+  <figure class="wide figure mid">
+    <div role="img" aria-label="Accuracy on VoiceGiraffe sound questions when the reader reads a transcript of the excerpts or listens to them">{{FIG_LISTEN}}</div>
+    <figcaption><b>Figure 6.</b> Accuracy (%) on VoiceGiraffe sound and voice questions from the same excerpts, read as the reader's own transcript or heard as audio (paper Table 4).</figcaption>
+  </figure>
+
+  <div class="prose">
+    <h3>Where the scores peak</h3>
+    <p>Across a recording, most windows score below zero, and the score rises sharply where the question's evidence is. In the lecture below, three separate passages score high, and the highest of them falls on the narrow stretch the benchmark annotates.</p>
+  </div>
+  <div class="panel wide" data-switch>
+    <div class="panel-controls"><div class="ctl"><span class="ctl-l" id="sw-l">Recording</span><div class="seg" role="radiogroup" aria-labelledby="sw-l"></div></div></div>
+    <div class="panel-body">
+      <div data-view="lens" data-label="Eye lecture">
+        <p class="scan-q"><span>87-minute development recording</span> According to the lecture, what is the direct mechanical cause of the lens flattening when shifting focus to a distant object?</p>
+        <div role="img" aria-label="Scan scores along an 87-minute lecture, with three peaks and the highest at the annotated evidence near minute 58">{{SCAN_LENS}}</div>
+      </div>
+      <div data-view="pizza" data-label="Pizza debate" hidden>
+        <p class="scan-q"><span>84-minute test recording</span> How many distinct speakers are heard during the pineapple-pizza and cold-pizza debate?</p>
+        <div role="img" aria-label="Scan scores along an 84-minute recording, peaking near minute 28 where the evidence is">{{SCAN_PIZZA}}</div>
+      </div>
+    </div>
+  </div>
+  <p class="figure-note wide">Score <i>ℓ</i><sub><i>i</i></sub> of every window, read from the paper's vector Figures 1 and 6. Circles mark the three windows that ReListen selects, and the grey band is the annotated evidence.</p>
+
+  <div class="prose">
+    <h3>Counting occurrences, with a supervised extension</h3>
+    <p>Some questions ask about the <i>k</i>-th occurrence of an event, such as a sound planted in the recording. Every occurrence matches the description equally well, so relevance alone cannot tell them apart. For these questions we study a supervised extension. Two small acoustic detectors, trained on synthetic edits, propose candidate times, the scan adds its best windows, and a calibrated model gives each candidate a probability <math-tex>p_j</math-tex> of being real. Instead of a threshold, the extension picks the candidate most likely to be real with exactly <math-tex>k-1</math-tex> real candidates before it, where <math-tex>z_i \sim \mathrm{Bernoulli}(p_i)</math-tex> marks whether candidate <math-tex>i</math-tex> is real:</p>
+    <math-tex display>\pi^{(k)}_j = p_j \cdot \Pr\Big[\textstyle\sum_{i<j} z_i = k-1\Big]</math-tex>
+    <p>On LongAudioSpan occurrence chains, where three linked questions must be answered in turn, this reaches a chain score of 60.7. The full recording with time marks reaches 17.2, and the Whisper transcript stays near random guessing.</p>
+  </div>
+  <figure class="wide figure mid">
+    <div role="img" aria-label="Chain scores on LongAudioSpan occurrence chains">{{FIG_CHAINS}}</div>
+    <figcaption><b>Figure 7.</b> Chain score on the 180 test occurrence chains of LongAudioSpan (paper Table 10). A chain scores 0, 33.3, 66.7 or 100 for zero to three consecutive correct answers, and random guessing gives 10.9.</figcaption>
+  </figure>
+</section>
+
+<section class="prose" id="citation">
+  <h2>BibTeX</h2>
+  <div class="bib">
+    <button type="button" id="copy-bib">Copy</button>
+    <pre id="bib-text">{{BIBTEX}}</pre>
+  </div>
+</section>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    {{LOGOS_SMALL}}
+    <p>Hsu, Liu, Hu, Wang, Shen, Li, Wu · Preprint 2026 · <a href="{{PAPER_URL}}" target="_blank" rel="noopener">arXiv</a></p>
+  </div>
+</footer>
+{{PAGE_DATA}}
+</body>
+</html>

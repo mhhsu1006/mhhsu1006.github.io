@@ -1,0 +1,79 @@
+WEBVTT
+
+00:00:00.700 --> 00:00:07.612
+ReListen: training-free evidence localization in
+hour-long audio, with frozen audio language models.
+
+00:00:09.012 --> 00:00:12.937
+Here is an 84-minute recording,
+and one question about it.
+
+00:00:17.521 --> 00:00:20.486
+The answer sits in about one minute of the audio.
+
+00:00:20.786 --> 00:00:25.394
+A transcript would make the hour fit,
+but it throws away the voices and sounds.
+
+00:00:25.694 --> 00:00:29.043
+And most audio models cannot
+hear a whole hour at once.
+
+00:00:30.343 --> 00:00:35.229
+ReListen lets one frozen audio model
+search the recording by itself.
+
+00:00:35.529 --> 00:00:39.911
+It cuts the audio into windows of
+20 seconds, and asks of each one:
+
+00:00:39.911 --> 00:00:43.443
+does this excerpt help answer
+the question? Yes or no.
+
+00:00:43.743 --> 00:00:47.647
+It reads the probability of yes,
+without generating any text.
+
+00:00:47.947 --> 00:00:49.931
+The scores peak where the evidence is.
+
+00:00:50.231 --> 00:00:55.281
+The same model then listens again to its
+three best windows, one minute in total,
+
+00:00:55.281 --> 00:00:56.653
+and answers correctly.
+
+00:00:56.953 --> 00:00:58.254
+Nothing is trained.
+
+00:00:59.654 --> 00:01:06.865
+On VoiceGiraffe, the selected minute overlaps
+the annotated evidence for 88.5% of questions.
+
+00:01:07.165 --> 00:01:10.663
+Searching a transcript finds it for 58.8%.
+
+00:01:10.963 --> 00:01:17.235
+And answering from that one minute beats a
+transcript of the whole recording by 9.2 points.
+
+00:01:18.735 --> 00:01:21.445
+Why listen, instead of
+reading the selected minute?
+
+00:01:21.745 --> 00:01:25.094
+For questions about what is said,
+reading works about as well.
+
+00:01:25.394 --> 00:01:28.197
+But for questions about sounds and voices,
+
+00:01:28.197 --> 00:01:32.135
+listening to the same excerpts
+is 8.6 points more accurate.
+
+00:01:33.635 --> 00:01:38.926
+A frozen audio model can find its own
+evidence. No transcript, and no training.

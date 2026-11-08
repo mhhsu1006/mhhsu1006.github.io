@@ -1,0 +1,16 @@
+{
+  "name": "project-page-tools",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "strict": "STRICT=1 node build.mjs",
+    "cover": "node render_cover.mjs"
+  },
+  "dependencies": {
+    "katex": "^0.16.11"
+  },
+  "devDependencies": {
+    "playwright": "^1.63.0"
+  }
+}
