@@ -111,6 +111,6 @@ description: "將大學課程 PPT、PDF、教材、筆記、作業及歷屆考�
 - `references/quality-gates.md`：完整品質門檻、錯誤分級及交付標準。
 - `references/repair-protocol.md`：逐段檢查與修復舊講義的做法。
 - `assets/source-map-template.md`：來源追溯、術語／假設登記模板。
-- `assets/chapter-template.md`：理解版章節模板。
+- `assets/chapter-template.md`：可按需刪減的理解版章節模板。
 - `examples/economics-example.md`：錯誤教學與可理解講解的對照示例（不是課程資料）。
 - `references/evaluation-scenarios.md`：缺少來源、模型假設與學生困惑的回歸驗收情境。
